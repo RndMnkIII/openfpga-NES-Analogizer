@@ -346,7 +346,7 @@ module core_top (
           multitap_enabled <= bridge_wr_data[0];
         end
         32'h304: begin
-          lightgun_enabled <= bridge_wr_data[0];
+          lightgun_enabled <= bridge_wr_data[1:0];
         end
         32'h308: begin
           lightgun_dpad_aim_speed <= bridge_wr_data[7:0];
@@ -679,7 +679,7 @@ module core_top (
    wire external_reset = reset_delay > 0;
 
    reg multitap_enabled = 0;
-   reg lightgun_enabled = 0;
+   reg [1:0] lightgun_enabled = 0;
    reg [7:0] lightgun_dpad_aim_speed = 0;
 
    reg [2:0] turbo_speed = 0;
@@ -695,14 +695,14 @@ module core_top (
   wire external_reset_s;
 
   wire multitap_enabled_s;
-  wire lightgun_enabled_s;
+  wire [1:0] lightgun_enabled_s;
   wire [7:0] lightgun_dpad_aim_speed_s;
 
   wire [2:0] turbo_speed_s;
   wire swap_controllers_s;
 
   synch_3 #(
-      .WIDTH(21)
+      .WIDTH(22)
   ) settings_s (
       {
         //region,
@@ -1006,6 +1006,9 @@ openFPGA_Pocket_Analogizer #(.MASTER_CLK_FREQ(42_954_496), .LINE_LENGTH(260)) an
       //.multitap_enabled(1'b0),
       .lightgun_enabled(lightgun_enabled_s),
       //.lightgun_enabled(1'b0),
+      //SNAC Zapper inputs from P2 port
+      .SNAC_Zapper_Trigger(p2_controls[7]), //added zapper trigger to Y
+      .SNAC_Zapper_Light(p2_controls[6]), //added zapper light to X
 
       .lightgun_dpad_aim_speed(lightgun_dpad_aim_speed_s),
       //.lightgun_dpad_aim_speed(8'd0),

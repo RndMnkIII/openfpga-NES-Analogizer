@@ -4,11 +4,11 @@
     "metadata": {
       "platform_ids": ["nes"],
       "shortname": "NES_Analogizer",
-      "description": "ANALOGIZER Nintendo Entertainment System and Famicom. Nintendo's first home console",
+      "description": "[Analogizer] Nintendo Entertainment System and Famicom. Nintendo's first home console",
       "author": "agg23",
       "url": "https://github.com/RndMnkIII/openfpga-NES-Analogizer",
-      "version": "1.0.1",
-      "date_release": "2023-07-13"
+      "version": "1.0.2",
+      "date_release": "2025-02-10"
     },
     "framework": {
       "target_product": "Analogue Pocket",

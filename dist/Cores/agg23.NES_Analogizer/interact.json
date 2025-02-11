@@ -303,16 +303,30 @@
         "type": "action",
         "enabled": false
       },
+
       {
-        "name": "Use Zapper",
+        "name": "Zapper",
         "id": 81,
-        "type": "check",
+        "type": "list",
         "enabled": true,
-        "address": "0x304",
         "persist": true,
         "writeonly": true,
+        "address": "0x304",
         "defaultval": 0,
-        "value": 1
+        "options": [
+          {
+            "value": 0,
+            "name": "Off"
+          },
+          {
+            "value": 1,
+            "name": "Emulated Zapper (Stick)"
+          },
+          {
+            "value": 2,
+            "name": "SNAC Zapper"
+          }
+        ]
       },
       {
         "name": "D-Pad Aim Speed",

@@ -37,23 +37,22 @@
 //cart_tran_bank1[7] -------------------------------------------+     |     |
 //cart_tran_pin30    -------------------------------------------------+     | cart_tran_pin30_dir=1'b1, cart_pin30_pwroff_reset=1'b1 (GPIO USE)
 //cart_tran_pin31    -------------------------------------------------------+ cart_tran_pin31_dir=1'b0 / 1'b1 
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------++------------------
-//                                                      C O N F I G U R A T I O N   A                                                                                || CONFIGURATION  B
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------++------------------
-//     DEV TYPE          0                   1                    2                   3                   4                     5                 6                  || 16         
-//     PIN_NAME         SNAC DISABLED        DB15		          NES                 SNES                PCENGINE(2BTN)        PCENGINE(6BTN)    PCENGINE(MULTITAP) || PSX
-//USB3       SNAC                                                                                                                                                    || [NOT IMPLEMENTED]
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------||------------------
-//VBUS 		 	                             +5V                  +5V                 +5V                 +5V                   +5V               +5V                || +5V                 
-//D-		 OUT1      	                     CLK(O)               CLK_1(O)            CLK_1(O)            CLR(O)(*)             CLR(O)(*)         CLR(O)(*)          || AT1(O)     
-//D+		 OUT2      	                     LAT(O)               LAT(O)              LAT(O)              SEL(O)(*)             SEL(O)(*)         SEL(O)(*)          || AT2(O)     
-//GND 		 	                             GND                  GND                 GND                 GND                   GND               GND                || GND     
-//RX-		  IO3                            DAT(I)               D0_1(I)             D0_1(I)             D2 (I)(*)             D2 (I)(*)         D2 (I)(*)          || CLK(O)          +
-//RX+		  IN4                                                 D4_2(I)             IO_2(I)             D0 (I)(*)             D0 (I)(*)         D0 (I)(*)          || DAT(I)      
-//GND_DRAIN	  IO5                                                 CLK_2(O)            CLK_2(O)                                                                       || ACK(I)          +
-//TX-		  IO6                            DAT(I)(1)            D3_2(I)             D3_2(I)             D1 (I)(*)             D1 (I)(*)         D1 (I)(*)          || CMD(O)          +    
-//TX+		  IN7                            D0_2(I)              D0_2(I)             D3 (I)(*)           D3 (I)(*)             D3 (I)(*)         D3 (I)(*)          || IRQ10(I)      
-//
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------++------------------
+//                                                      C O N F I G U R A T I O N   A                                                                                             || CONFIGURATION  B
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------++------------------
+//     DEV TYPE          0                   1                    2                                3                   4                     5                 6                  || 16         
+//     PIN_NAME         SNAC DISABLED        DB15		          NES                              SNES                PCENGINE(2BTN)        PCENGINE(6BTN)    PCENGINE(MULTITAP) || PSX
+//USB3       SNAC                                                                                                                                                                 || [NOT IMPLEMENTED]
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------||------------------
+//VBUS 		 	                             +5V                  +5V                              +5V                 +5V                   +5V               +5V                || +5V                 
+//D-		 OUT1      	                     CLK(O)               CLK_1(O)                         CLK_1(O)            CLR(O)(*)             CLR(O)(*)         CLR(O)(*)          || AT1(O)     
+//D+		 OUT2      	                     LAT(O)               LAT(O)                           LAT(O)              SEL(O)(*)             SEL(O)(*)         SEL(O)(*)          || AT2(O)     
+//GND 		 	                             GND                  GND                              GND                 GND                   GND               GND                || GND     
+//RX-		  IO3                            DAT(I)               D0_1(I)                          D0_1(I)             D2 (I)(*)             D2 (I)(*)         D2 (I)(*)          || CLK(O)          +
+//RX+		  IN4                                                 D4_2(I)  TRIGGER                 IO_2(I)             D0 (I)(*)             D0 (I)(*)         D0 (I)(*)          || DAT(I)      
+//GND_DRAIN	  IO5                                                 CLK_2(O)                         CLK_2(O)                                                                       || ACK(I)          +
+//TX-		  IO6                            DAT(I)(1)            D3_2(I)  LIGHT SENSOR            D3_2(I)             D1 (I)(*)             D1 (I)(*)         D1 (I)(*)          || CMD(O)          +    
+//TX+		  IN7                            D0_2(I)              D0_2(I)                          D3 (I)(*)           D3 (I)(*)             D3 (I)(*)         D3 (I)(*)          || IRQ10(I)      
 //(1) Alternate output of DAT (for male-to-male extension cables which cross Tx,Rx lines)
 
 //(*) Needs a specific cable harness for use MiSTer SNAC adapter with the Pocket:
@@ -290,23 +289,23 @@ module openFPGA_Pocket_Analogizer_SNAC #(parameter MASTER_CLK_FREQ=50_000_000)
     end
                                                
     wire stb_clk /* synthesis keep */;
-    clock_divider_fract ckdiv(
+    clock_divider_fract ckdiv( 
     .i_clk (i_clk),
     .i_rst(reset_on_change), //reset on polling freq change
     .i_step(strobe_step_size[31:0]),
     .o_stb (stb_clk)
     );
 
-	 wire dbg_clk_w;
-	 reg dbg_clk /* synthesis noprune */;
-    clock_divider_fract dbgckdiv(
-    .i_clk (i_clk),
-    .i_rst(reset_on_change), //reset on polling freq change
-    .i_step({strobe_step_size[29:0],2'b00}),
-    .o_stb (dbg_clk_w)
-    );
+	//  wire dbg_clk_w;
+	//  reg dbg_clk /* synthesis noprune */;
+    // clock_divider_fract dbgckdiv(
+    // .i_clk (i_clk),
+    // .i_rst(reset_on_change), //reset on polling freq change
+    // .i_step({strobe_step_size[29:0],2'b00}),
+    // .o_stb (dbg_clk_w)
+    // );
 	 
-	 always @(posedge i_clk) dbg_clk <= dbg_clk_w;
+	//  always @(posedge i_clk) dbg_clk <= dbg_clk_w;
 
     assign o_stb = stb_clk;
 
@@ -317,7 +316,56 @@ module openFPGA_Pocket_Analogizer_SNAC #(parameter MASTER_CLK_FREQ=50_000_000)
     wire [15:0] sl_p2 /* synthesis keep */;
     wire SERLAT_SNAC_OUT1 /* synthesis keep */;
     wire SERLAT_SNAC_OUT2 /* synthesis keep */;
+    reg [1:0] i_D3_r;
+    reg [1:0] i_D4_r;
     //wire SERLAT_SNAC_IO5_A /* synthesis keep */;
+    
+    //shift in D3 and D4 from SNAC_IN4 and SNAC_IO6_A for NES Zapper controller
+    always @(posedge i_clk) begin
+        i_D3_r <= {i_D3_r[0],SNAC_IO6_A};
+        i_D4_r <= {i_D4_r[0],SNAC_IN4};
+    end
+
+// reg SNAC_IO6_A_1;
+// reg SNAC_IN4_1;
+
+// reg SNAC_IO6_A_2;
+// reg SNAC_IN4_2;
+
+// reg SNAC_IO6_A_3;
+// reg SNAC_IN4_3;
+
+// reg SNAC_IO6_A_4;
+// reg SNAC_IN4_4;
+
+// reg SNAC_IO6_A_5;
+// reg SNAC_IN4_5;
+
+// reg SNAC_IO6_A_6;
+// reg SNAC_IN4_6;
+
+// reg IO6_A_glitch;
+// reg IN4_glitch;
+
+//glitch filter
+// always @(posedge i_clk)
+// begin
+
+//     SNAC_IO6_A_1 <= ~SNAC_IO6_A;
+//     SNAC_IN4_1 <= ~SNAC_IN4;
+
+//     SNAC_IO6_A_2 <= SNAC_IO6_A_1;
+//     SNAC_IN4_2 <=  SNAC_IN4_1;
+
+//     SNAC_IO6_A_3 <= SNAC_IO6_A_2;
+//     SNAC_IN4_3 <=  SNAC_IN4_2;
+
+//     SNAC_IO6_A_4 <= SNAC_IO6_A_3;
+//     SNAC_IN4_4 <=  SNAC_IN4_3;
+
+//     IO6_A_glitch <= SNAC_IO6_A_1 && SNAC_IO6_A_2 && SNAC_IO6_A_3 && SNAC_IO6_A_4 ? 1'b0 : 1'b1;
+//     IN4_glitch   <= SNAC_IN4_1 && SNAC_IN4_2 && SNAC_IN4_3 && SNAC_IN4_4 ? 1'b0 : 1'b1;
+// end
     serlatch_game_controller #(.MASTER_CLK_FREQ(MASTER_CLK_FREQ)) slgc
     (
         .i_clk(i_clk),
@@ -331,8 +379,8 @@ module openFPGA_Pocket_Analogizer_SNAC #(parameter MASTER_CLK_FREQ=50_000_000)
         .o_clk(SERLAT_SNAC_OUT1), //shared for 2 controllers
         .o_clk2(SNAC_IO5_A),
         .o_lat(SERLAT_SNAC_OUT2), //shared for 2 controllers
-        .i_dat1(SNAC_IO3_A), //data from controller 1
-        .i_dat2(SNAC_IN7)  //data from controller 2
+        .i_dat1((game_cont_type == 5'h1 || game_cont_type == 5'h9) ? SNAC_IO3_A & SNAC_IO6_A : SNAC_IO3_A ), //data from controller 1
+        .i_dat2(SNAC_IN7),  //data from controller 2
     );
 
     //PCENGINE game controller
@@ -385,11 +433,21 @@ pcengine_game_controller_multitap #(.MASTER_CLK_FREQ(MASTER_CLK_FREQ)) pcegmutit
             p3_btn_state = 16'h0; 
             p4_btn_state = 16'h0;
         end
-        GC_DB15, GC_DB15_FAST, GC_NES, GC_SNES, GC_SNES_SWAP: begin
+        GC_DB15, GC_DB15_FAST, GC_SNES, GC_SNES_SWAP: begin
             SNAC_OUT1 = SERLAT_SNAC_OUT1;
             SNAC_OUT2 = SERLAT_SNAC_OUT2;            
             p1_btn_state = sl_p1;
             p2_btn_state = sl_p2;
+            p3_btn_state = 16'h0; 
+            p4_btn_state = 16'h0;
+
+        end
+        //added special case for NES Zapper
+        GC_NES: begin
+            SNAC_OUT1 = SERLAT_SNAC_OUT1;
+            SNAC_OUT2 = SERLAT_SNAC_OUT2;            
+            p1_btn_state = sl_p1; //{sl_p1[15:8], ~i_D4_r[1], ~i_D3_r[1], sl_p1[5:0]};  //insert D4 and D3 at 7 and 6 bit positions (X,Y buttons)                            
+            p2_btn_state = {sl_p2[15:8], ~i_D4_r[1], ~i_D3_r[1], sl_p2[5:0]};
             p3_btn_state = 16'h0; 
             p4_btn_state = 16'h0;
 
