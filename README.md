@@ -7,7 +7,8 @@
 
 Tested NES SNAC adapters working with the Zapper lightgun:
 * https://ultimatemister.com/product/ultimate-snac-mini-hdmi/
-* Blue212 based design (uses two board, a common board and console specific connector board).  https://manuferhi.com/p/snac-adapter-for-mister with the [two port NES](https://www.etsy.com/de-en/listing/1556489601/mister-fpga-snac-adapter-nes-2p) connector or [one port](https://www.etsy.com/de-en/listing/1781156747/mister-snac-adapter-nes-vertical).
+* Blue212 based design (uses two board, a common board and console specific connector board).  https://manuferhi.com/p/snac-adapter-for-mister with the [two port NES](https://www.etsy.com/de-en/listing/1556489601/mister-fpga-snac-adapter-nes-2p) connector or [one port](https://www.etsy.com/de-en/listing/1781156747/mister-snac-adapter-nes-vertical). Any SNAC adapter based on Blue212 design will be work.
+
 Recomended settings inside Pupdate (PocketSetup>Analogizer Config>Standard Analogizer Config) for use the NES Zapper lightgun with a NES SNAC adapter:
 ```
 SNAC Controller:     NES - Nintendo Entertainment System gamepad
