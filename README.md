@@ -174,6 +174,6 @@ There are several options provided for tweaking the displayed video:
 
 ### Lightguns
 
-Core supports virtual lightguns by enabling the "Use Zapper" setting. The crosshair can be controlled with the D-Pad or left joystick, using the A button to fire. D-Pad aim sensitivity can be adjusted with the "D-Pad Aim Speed" setting.
+Core supports virtual lightguns by enabling the `Use Zapper > Emulated Zapper (Stick)` setting. The crosshair can be controlled with the D-Pad or left joystick, using the A button to fire. D-Pad aim sensitivity can be adjusted with the "D-Pad Aim Speed" setting. In addition, the Analogizer core version supports directly connecting the Zapper gun using a SNAC NES adapter  by enabling the `Use Zapper > SNAC Zapper` setting
 
 **NOTE:** Joystick support for aiming only appears to work when a controller is paired over Bluetooth and not connected to the Analogue Dock directly by USB.
