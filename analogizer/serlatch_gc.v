@@ -177,9 +177,9 @@ module serlatch_game_controller #(parameter MASTER_CLK_FREQ=53_600_000)
     reg [15:0] p1b_r;
     reg [15:0] p2b_r;
 
-    wire latch_level /* synthesis keep */;
-    wire disable_clock_on_latch /* synthesis keep */;
-    wire sample_data /* synthesis keep */;
+    wire latch_level ;
+    wire disable_clock_on_latch ;
+    wire sample_data ;
 
     //always sample data at falling edge of o_clk starting and second clock pulse in latch phase.
     assign sample_data = ~counter[0] && i_stb && (counter > 1) && (counter <= counter_top_value);
@@ -244,8 +244,8 @@ module serlatch_game_controller #(parameter MASTER_CLK_FREQ=53_600_000)
 
                                 //follow Pocket game controls order:
                                 //                START    SELECT        R3        L3     R2     L2     R1     L1    Y         X         B         A        RIGHT    LEFT     DOWN     UP
-                                p1_btn_state <= ~{p1b_r[3],p1b_r[2],     1'b1,     1'b1,  1'b1,  1'b1,  1'b1,  1'b1, 1'b1,  1'b1,        p1b_r[1], p1b_r[0],p1b_r[7],p1b_r[6],p1b_r[5],p1b_r[4]};
-                                p2_btn_state <= ~{p2b_r[3],p2b_r[2],     1'b1,     1'b1,  1'b1,  1'b1,  1'b1,  1'b1, 1'b1,  1'b1,        p2b_r[1], p2b_r[0],p2b_r[7],p2b_r[6],p2b_r[5],p2b_r[4]}; //added zapper light to X, zapper trigger to Y
+                                p1_btn_state <= ~{p1b_r[3],p1b_r[2],     1'b1,     1'b1,  1'b1,  1'b1,  1'b1,  1'b1, 1'b1,     1'b1,     p1b_r[1], p1b_r[0],p1b_r[7],p1b_r[6],p1b_r[5],p1b_r[4]};
+                                p2_btn_state <= ~{p2b_r[3],p2b_r[2],     1'b1,     1'b1,  1'b1,  1'b1,  1'b1,  1'b1, 1'b1,     1'b1,     p2b_r[1], p2b_r[0],p2b_r[7],p2b_r[6],p2b_r[5],p2b_r[4]};
                             end
                             4'h3: begin //SNES
                                 //SNAC SNES adapter button order from first to last

@@ -32,7 +32,7 @@ localparam AWIDTH = $clog2(LENGTH)-1;
 localparam DWIDTH = HALF_DEPTH ? 11 : 23;
 localparam DWIDTH1 = DWIDTH+1;
 
-(* romstyle = "MLAB" *) reg [5:0] hqTable[256];
+(* romstyle = "M10K" *) reg [5:0] hqTable[256];
 initial begin
 	hqTable = '{
 		19, 19, 26, 11, 19, 19, 26, 11, 23, 15, 47, 35, 23, 15, 55, 39,

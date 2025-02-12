@@ -2,11 +2,12 @@
 // Original work by @RndMnkIII. 
 // Date: 05/2024 
 // Releases: 
-// 1.0 Initial RGBS output mode
-// 1.1 Added SOG modes: RGsB, YPbPt
-// 1.2 Added Mike Simon Y/C module, Scandoubler SVGA Mist module.     
+// * 1.0 05/2024    Initial RGBS output mode
+// * 1.1            Added SOG modes: RGsB, YPbPt
+// * 1.2            Added Mike Simon Y/C module, Scandoubler SVGA Mist module.     
+// * 1.3 11/02/2025 Added Bridge interface to directly access to the Analogizer settings, now returns the settings. Added NES SNAC Zapper support.
 
-// *** Analogizer R.2 adapter ***
+// *** Analogizer R.3 adapter ***
 // * WHEN SOG SWITCH IS IN ON POSITION, OUTPUTS CSYNC ON G CHANNEL
 // # WHEN YPbPr VIDEO OUTPUT IS SELECTED, Y->G, Pr->R, Pb->B
 //Pin mappings:                                               VGA CONNECTOR                                                                                          USB3 TYPE A FEMALE CONNECTOR (SNAC)
@@ -69,36 +70,58 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parameter LINE_LENGTH) (
-	input wire i_clk,
-    input wire i_rst,
-	input wire i_ena,
+module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parameter LINE_LENGTH, parameter ADDRESS_ANALOGIZER_CONFIG = 8'hF7,) (
+	input  wire clk_74a,
+	input  wire i_clk,
+    input  wire i_rst,
+	input  wire i_ena,
 	//Video interface
-	input wire video_clk,
-	input wire [3:0] analog_video_type,
-	input wire [7:0] R,
-	input wire [7:0] G,
-	input wire [7:0] B,
-	input wire Hblank,
-	input wire Vblank,
-	input wire BLANKn,
-	input wire Hsync,
-	input wire Vsync,
-	input wire Csync,
+	input  wire video_clk,
+	input  wire [7:0] R,
+	input  wire [7:0] G,
+	input  wire [7:0] B,
+	input  wire Hblank,
+	input  wire Vblank,
+	input  wire BLANKn,
+	input  wire Hsync,
+	input  wire Vsync,
+	input  wire Csync,
+
+	//openFPGA Bridge interface
+	input  wire [31:0] bridge_addr,
+	input  wire        bridge_rd,
+	output reg  [31:0] analogizer_bridge_rd_data,
+	input  wire        bridge_wr,
+	input  wire [31:0] bridge_wr_data,
+
+	//Analogizer settings
+	output wire [4:0] snac_game_cont_type_out,
+	output wire [3:0] snac_cont_assignment_out,
+	output wire [3:0] analogizer_video_type_out,
+	output wire [2:0] SC_fx_out,
+	output wire pocket_blank_screen_out,
+	output wire analogizer_osd_out,
+
 	//Video Y/C Encoder interface
-	input wire [39:0] CHROMA_PHASE_INC,
-	input wire PALFLAG,
+	input  wire [39:0] CHROMA_PHASE_INC,
+	input  wire PALFLAG,
 	//Video SVGA Scandoubler interface
-	input wire ce_pix,
-	input wire scandoubler, //logic for disable/enable the scandoubler
-	input wire [2:0] fx, //0 disable, 1 scanlines 25%, 2 scanlines 50%, 3 scanlines 75%, 4 hq2x
+	input  wire ce_pix,
+	input  wire scandoubler, //logic for disable/enable the scandoubler
 	//SNAC interface
-    input wire conf_AB,              //0 conf. A(default), 1 conf. B (see graph above)
-    input wire [4:0] game_cont_type, //0-15 Conf. A, 16-31 Conf. B
     output wire [15:0] p1_btn_state,
+	output wire [31:0] p1_joy_state,
     output wire [15:0] p2_btn_state,
+	output wire [31:0] p2_joy_state,
     output wire [15:0] p3_btn_state,
     output wire [15:0] p4_btn_state,
+	//PSX rumble interface joy1, joy2
+    input [1:0] i_VIB_SW1,  //  Vibration SW  VIB_SW[0] Small Moter OFF 0:ON  1:
+                                //VIB_SW[1] Bic Moter   OFF 0:ON  1(Dualshook Only)
+	input [7:0] i_VIB_DAT1,  //  Vibration(Bic Moter)Data   8'H00-8'HFF (Dualshook Only)
+    input [1:0] i_VIB_SW2,
+	input [7:0] i_VIB_DAT2, 
+	// 
 	output wire busy, 
 	//Pocket Analogizer IO interface to the cartridge port
 	inout   wire    [7:0]   cart_tran_bank2,
@@ -115,8 +138,67 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 	inout   wire            cart_tran_pin31,
 	output  wire            cart_tran_pin31_dir,
     //debug
+	output wire [3:0] DBG_TX,
     output wire o_stb
 );
+
+	//Configuration file dat
+	//reg [31:0] analogizer_bridge_rd_data;
+	reg  [31:0] analogizer_config = 0;
+	wire [31:0]   analogizer_config_s;
+	
+	synch_3 #(.WIDTH(32)) analogizer_sync(analogizer_config, analogizer_config_s, i_clk);
+
+	// handle memory mapped I/O from pocket
+	always @(posedge clk_74a) begin
+		if(bridge_wr) begin
+			case(bridge_addr[31:24])
+			ADDRESS_ANALOGIZER_CONFIG: begin
+				analogizer_config <= {bridge_wr_data[7:0],bridge_wr_data[15:8],bridge_wr_data[23:16],bridge_wr_data[31:24]}; //read inverted byte order
+			end
+			endcase
+		end
+		if(bridge_rd) begin
+			case(bridge_addr[31:24])
+			ADDRESS_ANALOGIZER_CONFIG: begin
+				analogizer_bridge_rd_data <= {analogizer_config_s[7:0],analogizer_config_s[15:8],analogizer_config_s[23:16],analogizer_config_s[31:24]}; //invert byte order to writeback to the Sav folders
+			end
+			endcase
+		end
+	end
+	//
+  always @(posedge i_clk) begin
+    snac_game_cont_type   <= analogizer_config_s[4:0];
+    snac_cont_assignment  <= analogizer_config_s[9:6];
+    analogizer_video_type <= analogizer_config_s[13:10];
+	 //analogizer_ena	  <= analogizer_config_s[5];	
+	 pocket_blank_screen   <= analogizer_config_s[14];
+    analogizer_osd_out2	  <= analogizer_config_s[15];
+  end
+
+  wire conf_AB = (snac_game_cont_type >= 5'd16);
+
+  //0 disable, 1 scanlines 25%, 2 scanlines 50%, 3 scanlines 75%, 4 hq2x
+  always @(posedge i_clk) begin
+	if(analogizer_video_type >= 4'd5) SC_fx <= analogizer_video_type - 4'd5;
+end
+
+reg       analogizer_ena;
+reg [3:0] analogizer_video_type;
+reg [4:0] snac_game_cont_type;
+reg [3:0] snac_cont_assignment;
+reg [2:0] SC_fx;
+reg       pocket_blank_screen;
+reg       analogizer_osd_out2;
+
+assign analogizer_video_type_out = analogizer_video_type;
+assign snac_game_cont_type_out   = snac_game_cont_type;
+assign snac_cont_assignment_out  = snac_cont_assignment;
+assign SC_fx_out                 = SC_fx;
+assign pocket_blank_screen_out   = pocket_blank_screen;
+assign analogizer_osd_out        = analogizer_osd_out2;
+//------------------------------------------------------------------------
+
 	wire [7:4] CART_BK0_OUT ;
     wire [7:4] CART_BK0_IN ;
     wire CART_BK0_DIR ; 
@@ -133,12 +215,15 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 		.i_clk(i_clk),
 		.i_rst(i_rst),
 		.conf_AB(conf_AB),              //0 conf. A(default), 1 conf. B (see graph above)
-		.game_cont_type(game_cont_type), //0-15 Conf. A, 16-31 Conf. B
+		.game_cont_type(snac_game_cont_type), //0-15 Conf. A, 16-31 Conf. B
 		//.game_cont_sample_rate(game_cont_sample_rate), //0 compatibility mode (slowest), 1 normal mode, 2 fast mode, 3 superfast mode
 		.p1_btn_state(p1_btn_state),
+		.p1_joy_state(p1_joy_state),
 		.p2_btn_state(p2_btn_state),
+		.p2_joy_state(p2_joy_state),
 		.p3_btn_state(p3_btn_state),
 		.p4_btn_state(p4_btn_state),
+		.i_VIB_SW1(i_VIB_SW1), .i_VIB_DAT1(i_VIB_DAT1), .i_VIB_SW2(i_VIB_SW2), .i_VIB_DAT2(i_VIB_DAT2), 
 		.busy(busy),    
 		//SNAC Pocket cartridge port interface (see graph above)   
 		.CART_BK0_OUT(CART_BK0_OUT),
@@ -152,21 +237,22 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 		.CART_PIN31_IN(CART_PIN31_IN),
 		.CART_PIN31_DIR(CART_PIN31_DIR),
 		//debug
+		.DBG_TX(DBG_TX),
     	.o_stb(o_stb)
 	); 
 
 	//Choose type of analog video type of signal
-	reg [5:0] Rout, Gout, Bout;
-	reg HsyncOut, VsyncOut, BLANKnOut;
-	wire [7:0] Yout, PrOut, PbOut;
-	wire [7:0] R_Sd, G_Sd, B_Sd;
-	wire Hsync_Sd, Vsync_Sd;
-	wire Hblank_Sd, Vblank_Sd;
-	wire BLANKn_SD = ~(Hblank_Sd || Vblank_Sd);
+	reg [5:0] Rout, Gout, Bout ;
+	reg HsyncOut, VsyncOut, BLANKnOut ;
+	wire [7:0] Yout, PrOut, PbOut ;
+	wire [7:0] R_Sd, G_Sd, B_Sd ;
+	wire Hsync_Sd, Vsync_Sd ;
+	wire Hblank_Sd, Vblank_Sd ;
+	wire BLANKn_SD = ~(Hblank_Sd || Vblank_Sd) ;
 
 	always @(*) begin
-		case(analog_video_type)
-			4'h0, 4'h8: begin //RGBS
+		case(analogizer_video_type)
+			4'h0: begin //RGBS
 				Rout = R[7:2]&{6{BLANKn}};
 				Gout = G[7:2]&{6{BLANKn}};
 				Bout = B[7:2]&{6{BLANKn}};
@@ -174,7 +260,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 				VsyncOut = 1'b1;
 				BLANKnOut = BLANKn;
 			end
-			4'h3, 4'h4, 4'hB, 4'hC: begin// Y/C Modes works for Analogizer R1, R2 Adapters
+			4'h3, 4'h4: begin// Y/C Modes works for Analogizer R1, R2 Adapters
 				Rout = yc_o[23:18];
 				Gout = yc_o[15:10];
 				Bout = yc_o[7:2];
@@ -182,7 +268,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 				VsyncOut = 1'b1;
 				BLANKnOut = 1'b1;
 			end
-			4'h1, 4'h9: begin //RGsB
+			4'h1: begin //RGsB
 				Rout = R[7:2]&{6{BLANKn}};
 				Gout = G[7:2]&{6{BLANKn}};
 				Bout = B[7:2]&{6{BLANKn}};
@@ -190,7 +276,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 				VsyncOut = Csync; //to DAC SYNC pin, SWITCH SOG ON
 				BLANKnOut = BLANKn;
 			end
-			4'h2, 4'hA: begin //YPbPr
+			4'h2: begin //YPbPr
 				Rout = PrOut[7:2];
 				Gout = Yout[7:2];
 				Bout = PbOut[7:2];
@@ -198,7 +284,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 				VsyncOut = YPbPr_sync; //to DAC SYNC pin, SWITCH SOG ON
 				BLANKnOut = 1'b1; //ADV7123 needs this
 			end
-			4'h5, 4'hD: begin //Scandoubler modes
+			4'h5, 4'h6, 4'h7, 4'h8, 4'h9: begin //Scandoubler modes
 				Rout = vga_data_sl[23:18]; //R_Sd[7:2];
 				Gout = vga_data_sl[15:10]; //G_Sd[7:2];
 				Bout = vga_data_sl[7:2]; //B_Sd[7:2];
@@ -209,7 +295,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 			default: begin
 				Rout = 6'h0;
 				Gout = 6'h0;
-				Bout = 6'h3F;
+				Bout = 6'h0;
 				HsyncOut = Hsync;
 				VsyncOut = 1'b1;
 				BLANKnOut = BLANKn;
@@ -258,9 +344,9 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 		.de_o(YPbPr_blank)
 	);
 
-	wire [23:0] yc_o;
+	wire [23:0] yc_o ;
 	//wire yc_hs, yc_vs, 
-	wire yc_cs;
+	wire yc_cs ;
 	yc_out yc_out
 	(
 		.clk(i_clk),
@@ -276,11 +362,11 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 		.csync_o(yc_cs)
 	);
 
-	wire ce_pix_Sd;
+	wire ce_pix_Sd ;
 	scandoubler_2 #(.LENGTH(LINE_LENGTH), .HALF_DEPTH(0)) sd
 	(
 		.clk_vid(i_clk),
-		.hq2x(fx[2]),
+		.hq2x(SC_fx[2]),
 
 		.ce_pix(ce_pix),
 		.hs_in(Hsync),
@@ -301,9 +387,9 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 		.b_out(B_Sd)
 	);
 
-	reg Hsync_SL, Vsync_SL, Hblank_SL, Vblank_SL;
-	reg [7:0] R_SL, G_SL, B_SL;
-	reg CE_PIX_SL, DE_SL;
+	reg Hsync_SL, Vsync_SL, Hblank_SL, Vblank_SL ;
+	reg [7:0] R_SL, G_SL, B_SL ;
+	reg CE_PIX_SL, DE_SL ;
 
 	always @(posedge video_clk) begin
 		Hsync_SL <= (scandoubler) ? Hsync_Sd : Hsync;
@@ -318,13 +404,13 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 	end
 
 
-wire [23:0] vga_data_sl;
-wire        vga_vs_sl, vga_hs_sl;
-scanlines #(0) VGA_scanlines
+wire [23:0] vga_data_sl ;
+wire        vga_vs_sl, vga_hs_sl ;
+scanlines_analogizer #(0) VGA_scanlines
 (
 	.clk(video_clk),
 
-	.scanlines(fx[1:0]),
+	.scanlines(SC_fx[1:0]),
 	//.din(de_emu ? {R_SL, G_SL,B_SL} : 24'd0),
 	.din({R_SL, G_SL,B_SL}),
 	.hs_in(Hsync_SL),

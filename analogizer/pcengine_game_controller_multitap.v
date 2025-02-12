@@ -110,7 +110,7 @@ module pcengine_game_controller_multitap #(parameter MASTER_CLK_FREQ=50_000_000)
     //store module settings
     reg [3:0] game_controller_type_r;
 
-    reg [6:0] state /* synthesis preserve */;
+    reg [6:0] state ;
 
     reg [4:0] counter;
     reg [4:0] scan_number;

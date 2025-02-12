@@ -70,7 +70,7 @@ module pcengine_game_controller #(parameter MASTER_CLK_FREQ=50_000_000, paramete
 
     wire pulse_clr = PULSE_CLR_LINE;
 
-    reg [2:0] state /* synthesis preserve */;
+    reg [2:0] state ;
 
     reg [3:0] counter;
     reg [3:0] scan_number;

@@ -388,7 +388,7 @@ wire MMC6 = ((flags[7:0] == 4) && (flags[24:21] == 1)); // mapper 4, submapper 1
 wire acclaim = ((flags[7:0] == 4) && (flags[24:21] == 3)); // Acclaim mapper
 wire mapper268 = ({flags[20:17],flags[7:0]} == 268); // Coolboy/Mindkids; Note: if mapper 268-256=12 was in this driver, it would need to check upper mapper bits
 wire mapper268_5k = (flags[24:21] == 1);
-wire oversized = mapper268;
+wire oversized = mapper268 || (flags[10:9] == 3); // If prg size in header is >= 1MB (prg_size==6 or 7) must be some way to access it. Allow oversize mmc3
 wire gnrom;
 wire lockout;
 wire gnrom_lock;
@@ -764,21 +764,20 @@ wire chr_ram_cs =
 		mapper192             ? chrsel[7:2]==6'b000010  :
 		mapper194             ? chrsel[7:1]==7'b0000000 :
 		mapper195             ? chrsel[7:2]==6'b000000  :
-		four_screen_mirroring ? chr_ain[13]             :
 		flags[15];
 
-assign chr_allow = chr_ram_cs;
+assign chr_allow = chr_ram_cs | (four_screen_mirroring & chr_ain[13]);
 assign chr_aout =
+		(four_screen_mirroring & chr_ain[13])? {10'b11_1111_1100,              chr_ain[11:0]} :   // DxROM/TVROM 4kb NT RAM
 		(TQROM & chr_ram_cs)                 ? {9'b11_1111_111,    chrsel[2:0], chr_ain[9:0]} :   // TQROM 8kb CHR-RAM
 		(mapper74 & chr_ram_cs)              ? {11'b11_1111_1111_1,chrsel[0],   chr_ain[9:0]} :   // 2kb CHR-RAM
 		(mapper191 & chr_ram_cs)             ? {11'b11_1111_1111_1,chrsel[0],   chr_ain[9:0]} :   // 2kb CHR-RAM
 		(mapper192 & chr_ram_cs)             ? {10'b11_1111_1111,  chrsel[1:0], chr_ain[9:0]} :   // 4kb CHR-RAM
 		(mapper194 & chr_ram_cs)             ? {11'b11_1111_1111_1,chrsel[0],   chr_ain[9:0]} :   // 2kb CHR-RAM
 		(mapper195 & chr_ram_cs)             ? {10'b11_1111_1111,  chrsel[1:0], chr_ain[9:0]} :   // 4kb CHR-RAM
-		(four_screen_mirroring & chr_ram_cs) ? {9'b11_1111_111,   chr_ain[13], chr_ain[11:0]} :   // DxROM 8kb CHR-RAM
 		(m268_chr_ram)                       ? {11'b11_1111_1111_1,            chr_ain[10:0]} :   // 2kb CHR-RAM
 		(mapper268)                          ? {4'b10_00,              map268c, chr_ain[9:0]} :   // Mapper 268 override
-		                                       {3'b10_0,                chrsel, chr_ain[9:0]};    // Standard MMC3
+		                                       {3'b10_0,                chrsel, chr_ain[9:0]};    // Standard MMC3 CHR-ROM/RAM
 
 wire ram_a13 = mapper268 && m268_reg[3][5] && (prg_ain[15:12] == 4'h5);
 assign prg_is_ram = (ram_a13 || (prg_ain[15:13] == 3'b011) && ((prg_ain[12:8] == 5'b1_1111) | ~internal_128)) //(>= 'h6000 && < 'h8000) && (==7Fxx or external_ram)
@@ -1155,4 +1154,3 @@ assign vram_a10 = flags[14] ? chr_ain[10] : chr_ain[11];
 assign vram_ce = chr_ain[13];
 
 endmodule
-
