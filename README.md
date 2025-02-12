@@ -22,7 +22,7 @@ Use Zapper > SNAC Zapper
 
 Connect the Zapper to the second port of the NES SNAC adapter (if you have the two ports version) or to the first port (if you have the one port version).
 
-For use with PSX Analog stick emulating the reticle gunlight. Use this settings inside Pupdate (PocketSetup>Analogizer Config>Standard Analogizer Config):
+For use with PSX Analog stick emulating the reticle lightgun. Use this settings inside Pupdate (PocketSetup>Analogizer Config>Standard Analogizer Config):
 ```
 SNAC Controller:     PSX (Analog PAD) - PlayStation 1/2 analog gamepad
 SNAC Assigments:     SNAC P1,P2 -> Pocket P1,P2                       
