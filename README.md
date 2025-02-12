@@ -20,7 +20,7 @@ Recomended settings with NES Core Pocket menu  for use the NES Zapper lightgun w
 Use Zapper > SNAC Zapper
 ```
 
-Connect the Zapper to the second port of the NES SNAC adapter.
+Connect the Zapper to the second port of the NES SNAC adapter (if you have the two ports version) or the first port (if you have the one port version).
 
 For use with PSX Analog stick emulating the reticle gunlight. Use this settings inside Pupdate (PocketSetup>Analogizer Config>Standard Analogizer Config):
 ```
