@@ -58,7 +58,7 @@ The core can output RGBS, RGsB, YPbPr, Y/C and SVGA scandoubler (50% scanlines) 
 | :SNAC game controller:  | Analogizer A/B config Switch | Status |
 | :---------------------- | :--------------------------- | :----: |
 | DB15                    | A                            |  ✅    |
-| NES                     | A                            |  ✅    |
+| NES/Zapper              | A                            |  ✅    |
 | SNES                    | A                            |  ✅    |
 | PCENGINE                | A                            |  ✅    |
 | PCE MULTITAP            | A                            |  ✅    |
