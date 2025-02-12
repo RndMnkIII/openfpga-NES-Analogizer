@@ -127,13 +127,9 @@ Core supports four players/controllers via the Analogue Dock. To enable four pla
 
 This core has pairity with the MiSTer core's mapper support. [See the full breakdown here](https://github.com/MiSTer-devel/NES_MiSTer#supported-mappers). Please note that the VRC7 expansion audio chip is not supported in this core (but is in MiSTer) due to space constraints.
 
-### Save States/Sleep + Wake
+### Save States/Sleep + Wake and Saves
 
-Known as "Memories" on the Pocket, this core supports the creation and loading of save states for most mappers. See the full list in the [Mappers section](#mappers). By extension, the core supports Sleep + Wake functionality on the Pocket. In games with supported mappers, tapping the power button while playing will suspend the game, ready to be resumed when powering the Pocket back on.
-
-### Saves
-
-Supports saves for most games and mappers. Saving on the NES is rather complicated due to the different scenarios for different mappers, so it's possible some less common mappers do not save correctly on this core. Please report all such issues to this repo.
+Are not supported with Analogizer version of NES core because the Pocket FPGA size don't allow to use Analogizer features and saves at the same time.
 
 ### Controller Turbo
 
