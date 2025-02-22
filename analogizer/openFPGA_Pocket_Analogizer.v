@@ -70,7 +70,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parameter LINE_LENGTH, parameter ADDRESS_ANALOGIZER_CONFIG = 8'hF7,) (
+module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parameter LINE_LENGTH, parameter ADDRESS_ANALOGIZER_CONFIG = 8'hF7) (
 	input  wire clk_74a,
 	input  wire i_clk,
     input  wire i_rst,

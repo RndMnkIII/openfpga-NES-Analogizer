@@ -364,14 +364,14 @@ wire [4:0] bits7, bits6, bits5, bits4, bits3, bits2, bits1, bits0,
 	bits15, bits14, bits13, bits12, bits11, bits10, bits9, bits8;
 
 // Extra sprites
-Sprite sprite15(clk, ce, enable, load_ex, load_in_ex, load_out15, bits15);
-Sprite sprite14(clk, ce, enable, load_ex, load_out15, load_out14, bits14);
-Sprite sprite13(clk, ce, enable, load_ex, load_out14, load_out13, bits13);
-Sprite sprite12(clk, ce, enable, load_ex, load_out13, load_out12, bits12);
-Sprite sprite11(clk, ce, enable, load_ex, load_out12, load_out11, bits11);
-Sprite sprite10(clk, ce, enable, load_ex, load_out11, load_out10, bits10);
-Sprite sprite9( clk, ce, enable, load_ex, load_out10, load_out9,  bits9);
-Sprite sprite8( clk, ce, enable, load_ex, load_out9,  load_out8,  bits8);
+// Sprite sprite15(clk, ce, enable, load_ex, load_in_ex, load_out15, bits15);
+// Sprite sprite14(clk, ce, enable, load_ex, load_out15, load_out14, bits14);
+// Sprite sprite13(clk, ce, enable, load_ex, load_out14, load_out13, bits13);
+// Sprite sprite12(clk, ce, enable, load_ex, load_out13, load_out12, bits12);
+// Sprite sprite11(clk, ce, enable, load_ex, load_out12, load_out11, bits11);
+// Sprite sprite10(clk, ce, enable, load_ex, load_out11, load_out10, bits10);
+// Sprite sprite9( clk, ce, enable, load_ex, load_out10, load_out9,  bits9);
+// Sprite sprite8( clk, ce, enable, load_ex, load_out9,  load_out8,  bits8);
 
 // Basic Sprites
 Sprite sprite7( clk, ce, enable, load, load_in,    load_out7,  bits7);

@@ -217,7 +217,8 @@ module nes_top (
       .int_audio     (int_audio),
       .ext_audio     (ext_audio),
       // Video
-      .ex_sprites    (allow_extra_sprites),
+      //.ex_sprites    (allow_extra_sprites),
+      .ex_sprites    (1'b0),
       .color         (color),
       .emphasis      (emphasis),
       .cycle         (cycle),

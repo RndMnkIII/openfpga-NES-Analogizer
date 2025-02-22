@@ -579,46 +579,46 @@ module core_top (
   wire mapper_has_savestate;
   wire [31:0] save_state_bridge_read_data;
 
-  // save_state_controller save_state_controller (
-  //     .clk_74a(clk_74a),
-  //     .clk_mem_85_9(clk_85_9),
-  //     .clk_ppu_21_47(clk_ppu_21_47),
+  save_state_controller save_state_controller (
+      .clk_74a(clk_74a),
+      .clk_mem_85_9(clk_85_9),
+      .clk_ppu_21_47(clk_ppu_21_47),
 
-  //     // APF
-  //     .bridge_wr(bridge_wr),
-  //     .bridge_rd(bridge_rd),
-  //     .bridge_endian_little(bridge_endian_little),
-  //     .bridge_addr(bridge_addr),
-  //     .bridge_wr_data(bridge_wr_data),
-  //     .save_state_bridge_read_data(save_state_bridge_read_data),
+      // APF
+      .bridge_wr(bridge_wr),
+      .bridge_rd(bridge_rd),
+      .bridge_endian_little(bridge_endian_little),
+      .bridge_addr(bridge_addr),
+      .bridge_wr_data(bridge_wr_data),
+      .save_state_bridge_read_data(save_state_bridge_read_data),
 
-  //     // APF Save States
-  //     .savestate_load(savestate_load),
-  //     .savestate_load_ack_s(savestate_load_ack),
-  //     .savestate_load_busy_s(savestate_load_busy),
-  //     .savestate_load_ok_s(savestate_load_ok),
-  //     .savestate_load_err_s(savestate_load_err),
+      // APF Save States
+      .savestate_load(savestate_load),
+      .savestate_load_ack_s(savestate_load_ack),
+      .savestate_load_busy_s(savestate_load_busy),
+      .savestate_load_ok_s(savestate_load_ok),
+      .savestate_load_err_s(savestate_load_err),
 
-  //     .savestate_start(savestate_start),
-  //     .savestate_start_ack_s(savestate_start_ack),
-  //     .savestate_start_busy_s(savestate_start_busy),
-  //     .savestate_start_ok_s(savestate_start_ok),
-  //     .savestate_start_err_s(savestate_start_err),
+      .savestate_start(savestate_start),
+      .savestate_start_ack_s(savestate_start_ack),
+      .savestate_start_busy_s(savestate_start_busy),
+      .savestate_start_ok_s(savestate_start_ok),
+      .savestate_start_err_s(savestate_start_err),
 
-  //     // Save States Manager
-  //     .ss_save(ss_save),
-  //     .ss_load(ss_load),
+      // Save States Manager
+      .ss_save(ss_save),
+      .ss_load(ss_load),
 
-  //     .ss_din (ss_din),
-  //     .ss_dout(ss_dout),
-  //     .ss_addr(ss_addr),
-  //     .ss_rnw (ss_rnw),
-  //     .ss_req (ss_req),
-  //     .ss_be  (ss_be),
-  //     .ss_ack (ss_ack),
+      .ss_din (ss_din),
+      .ss_dout(ss_dout),
+      .ss_addr(ss_addr),
+      .ss_rnw (ss_rnw),
+      .ss_req (ss_req),
+      .ss_be  (ss_be),
+      .ss_ack (ss_ack),
 
-  //     .ss_busy(ss_busy)
-  // );
+      .ss_busy(ss_busy)
+  );
 
   // Core
 
