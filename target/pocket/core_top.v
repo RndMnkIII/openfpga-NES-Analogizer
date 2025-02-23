@@ -877,7 +877,10 @@ assign CHROMA_PHASE_INC = PALFLAG ? PAL_PHASE_INC : NTSC_PHASE_INC;
 assign PALFLAG = (analogizer_video_type == 4'h4); 
 
 //42_954_496
-openFPGA_Pocket_Analogizer #(.MASTER_CLK_FREQ(42_954_496), .LINE_LENGTH(260), .ADDRESS_ANALOGIZER_CONFIG(ADDRESS_ANALOGIZER_CONFIG)) analogizer (
+openFPGA_Pocket_Analogizer #(.MASTER_CLK_FREQ(42_954_496), .LINE_LENGTH(260), 
+                             .ADDRESS_ANALOGIZER_CONFIG(ADDRESS_ANALOGIZER_CONFIG),
+                             .USE_OLD_STYLE_SVGA_SCANDOUBLER(1'b1)) 
+                           analogizer (
   .clk_74a(clk_74a),
 	.i_clk(clk_analogizer),
 	.i_rst(external_reset_s), //i_rst is active high

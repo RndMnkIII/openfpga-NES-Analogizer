@@ -17,8 +17,9 @@
 
 module cart_top
 #(
-    parameter reg USE_MMAPPER_SET1 = 1'b1,
-    parameter reg USE_MMAPPER_SET2 = 1'b0
+    parameter reg USE_MMAPPER_SET1 = 1'b0,
+    parameter reg USE_MMAPPER_SET2 = 1'b1,
+	parameter reg USE_MMAPPER_SET3 = 1'b0
 ) (
 	input             clk,
 	input             ce,             // M2
@@ -342,7 +343,8 @@ endgenerate
 // Games  : Crystalis, Battletoads                                             //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+    //if (USE_MMAPPER_SET1 == 1'b1) begin
+	if (USE_MMAPPER_SET2 == 1'b1) begin	
 		wire mmc3_en = me[118] | me[119] | me[47] | me[206] | me[112] | me[88] | me[154] | me[95]
 			| me[76] | me[80] | me[82] | me[207] | me[48] | me[33] | me[37] | me[74] | me[191]
 			| me[192] | me[194] | me[195] | me[196] | me[4] | me[189] | me[268];
@@ -437,7 +439,7 @@ endgenerate
 // Games  : Castlevania III, Just Breed                                        //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 MMC5 mmc5(
 	.clk        (clk),
 	.ce         (ce),
@@ -567,7 +569,7 @@ wire map16_prg_write, map16_ovr;
 wire [7:0] map16_data_out;
 wire [17:0] map16_mapper_addr;
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+	if (USE_MMAPPER_SET2 == 1'b1) begin	
 		Mapper16 map16(
 			.clk        (clk),
 			.ce         (ce),
@@ -938,7 +940,7 @@ endgenerate
 // Games  : Gimmick!, Barcode World, Hebereke                                  //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		Mapper69 map69(
 			.clk        (clk),
 			.ce         (ce),
@@ -1822,7 +1824,7 @@ endgenerate
 // Games  : Akamajou Densetsu, Esper Dream 2, Mouryou Senki Madara             //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		VRC6 vrc6(
 			.clk        (clk),
 			.ce         (ce),
@@ -1864,7 +1866,7 @@ endgenerate
 // Games  : Lagrange Point, Tiny Toon Aventures 2 (j)                          //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		VRC7 vrc7(
 			.clk        (clk),
 			.ce         (ce),
@@ -1899,7 +1901,7 @@ endgenerate
 // Games  : Digital Devil Story, Battle Fleet, Famista                         //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		N163 n163(
 			.clk        (clk),
 			.ce         (ce),
@@ -2174,7 +2176,7 @@ endgenerate
 //          Tiny Toon Adventures 6 (211)                                       //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+	if (USE_MMAPPER_SET2 == 1'b1) begin	
 		JYCompany jycompany(
 			.clk        (clk),
 			.ce         (ce),
@@ -2332,37 +2334,41 @@ endgenerate
 // Games  : Bio Miracle for audio, Various unlicensed games for compatibility. //
 //*****************************************************************************//
 tri0 [1:0] fds_diskside;
-// MapperFDS mapfds(
-// 	.clk        (clk),
-// 	.ce         (ce),
-// 	.enable     (me[20]),
-// 	.flags      (flags),
-// 	.prg_ain    (prg_ain),
-// 	.prg_aout_b (prg_addr_b),
-// 	.prg_read   (prg_read),
-// 	.prg_write  (prg_write),
-// 	.prg_din    (prg_din),
-// 	.prg_dout_b (prg_dout_b),
-// 	.prg_allow_b(prg_allow_b),
-// 	.chr_ain    (chr_ain),
-// 	.chr_aout_b (chr_addr_b),
-// 	.chr_read   (chr_read),
-// 	.chr_allow_b(chr_allow_b),
-// 	.vram_a10_b (vram_a10_b),
-// 	.vram_ce_b  (vram_ce_b),
-// 	.irq_b      (irq_b),
-// 	.flags_out_b(flags_out_b),
-// 	.audio_in   (fds_audio),
-// 	.audio_b    (audio_out_b),
-// 	// Special ports
-// 	.prg_dbus   (prg_from_ram),
-// 	.audio_dout	(fds_data),
-// 	.diskside_b (fds_diskside),
-// 	.max_diskside (max_diskside),
-// 	.fds_busy   (fds_busy),
-// 	.fds_eject_btn (fds_eject),
-// 	.fds_auto_eject_en (fds_auto_eject)
-// );
+generate
+    if (USE_MMAPPER_SET3 == 1'b1) begin
+		MapperFDS mapfds(
+			.clk        (clk),
+			.ce         (ce),
+			.enable     (me[20]),
+			.flags      (flags),
+			.prg_ain    (prg_ain),
+			.prg_aout_b (prg_addr_b),
+			.prg_read   (prg_read),
+			.prg_write  (prg_write),
+			.prg_din    (prg_din),
+			.prg_dout_b (prg_dout_b),
+			.prg_allow_b(prg_allow_b),
+			.chr_ain    (chr_ain),
+			.chr_aout_b (chr_addr_b),
+			.chr_read   (chr_read),
+			.chr_allow_b(chr_allow_b),
+			.vram_a10_b (vram_a10_b),
+			.vram_ce_b  (vram_ce_b),
+			.irq_b      (irq_b),
+			.flags_out_b(flags_out_b),
+			.audio_in   (fds_audio),
+			.audio_b    (audio_out_b),
+			// Special ports
+			.prg_dbus   (prg_from_ram),
+			.audio_dout	(fds_data),
+			.diskside_b (fds_diskside),
+			.max_diskside (max_diskside),
+			.fds_busy   (fds_busy),
+			.fds_eject_btn (fds_eject),
+			.fds_auto_eject_en (fds_auto_eject)
+		);
+	end
+endgenerate
 
 //*****************************************************************************//
 // Name   : Mapper 31                                                          //
@@ -2372,44 +2378,46 @@ tri0 [1:0] fds_diskside;
 // Games  : Famicompo Pico 2014, NSF 1.0                                       //
 //*****************************************************************************//
 wire [5:0] exp_audioe;
-
-//was commented by agg23
-NSF nsfplayer(
-	.clk        (clk),
-	.ce         (ce),
-	.enable     (me[31]),
-	.flags      (flags),
-	.prg_ain    (prg_ain),
-	.prg_aout_b (prg_addr_b),
-	.prg_read   (prg_read),
-	.prg_write  (prg_write),
-	.prg_din    (prg_din),
-	.prg_dout_b (prg_dout_b),
-	.prg_allow_b(prg_allow_b),
-	.chr_ain    (chr_ain),
-	.chr_aout_b (chr_addr_b),
-	.chr_read   (chr_read),
-	.chr_dout_b (chr_dout_b), // Special port
-	.chr_allow_b(chr_allow_b),
-	.vram_a10_b (vram_a10_b),
-	.vram_ce_b  (vram_ce_b),
-	.irq_b      (irq_b),
-	.flags_out_b(flags_out_b),
-	.audio_in   (exp_audioe[5] ? ss5b_audio :
-	             exp_audioe[4] ? n163_audio :
-	             exp_audioe[3] ? mmc5_audio :
-	             exp_audioe[2] ? fds_audio  :
-	             exp_audioe[1] ? vrc7_audio :
-	             exp_audioe[0] ? vrc6_audio :
-					 audio_in),
-	.exp_audioe (exp_audioe),  // Expansion Enabled (0x0=None, 0x1=VRC6, 0x2=VRC7, 0x4=FDS, 0x8=MMC5, 0x10=N163, 0x20=SS5B
-	.audio_b    (audio_out_b),
-	.fds_din    (fds_data)
-);
+generate
+    if (USE_MMAPPER_SET3 == 1'b1) begin
+		NSF nsfplayer(
+			.clk        (clk),
+			.ce         (ce),
+			.enable     (me[31]),
+			.flags      (flags),
+			.prg_ain    (prg_ain),
+			.prg_aout_b (prg_addr_b),
+			.prg_read   (prg_read),
+			.prg_write  (prg_write),
+			.prg_din    (prg_din),
+			.prg_dout_b (prg_dout_b),
+			.prg_allow_b(prg_allow_b),
+			.chr_ain    (chr_ain),
+			.chr_aout_b (chr_addr_b),
+			.chr_read   (chr_read),
+			.chr_dout_b (chr_dout_b), // Special port
+			.chr_allow_b(chr_allow_b),
+			.vram_a10_b (vram_a10_b),
+			.vram_ce_b  (vram_ce_b),
+			.irq_b      (irq_b),
+			.flags_out_b(flags_out_b),
+			.audio_in   (exp_audioe[5] ? ss5b_audio :
+						exp_audioe[4] ? n163_audio :
+						exp_audioe[3] ? mmc5_audio :
+						exp_audioe[2] ? fds_audio  :
+						exp_audioe[1] ? vrc7_audio :
+						exp_audioe[0] ? vrc6_audio :
+							audio_in),
+			.exp_audioe (exp_audioe),  // Expansion Enabled (0x0=None, 0x1=VRC6, 0x2=VRC7, 0x4=FDS, 0x8=MMC5, 0x10=N163, 0x20=SS5B
+			.audio_b    (audio_out_b),
+			.fds_din    (fds_data)
+		);
+	end
+endgenerate
 
 wire [15:0] ss5b_audio;
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		SS5b_mixed snd_5bm (
 			.clk(clk),
 			.ce(ce),
@@ -2433,7 +2441,7 @@ endgenerate
 wire [15:0] n163_audio;
 wire [7:0] n163_data;
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		namco163_mixed snd_n163 (
 			.clk(clk),
 			.ce(ce),
@@ -2467,7 +2475,7 @@ wire [15:0] mmc5_audio;
 wire [7:0] mmc5_data;
 
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		mmc5_mixed snd_mmc5 (
 			.clk(clk),
 			.ce(ce),
@@ -2494,7 +2502,7 @@ wire [15:0] fds_audio;
 wire [7:0] fds_data;
 //was commented by agg23
 generate
-    if (USE_MMAPPER_SET1 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		fds_mixed snd_fds (
 			.clk(clk),
 			.ce(ce),
@@ -2512,7 +2520,7 @@ endgenerate
 wire [15:0] vrc7_audio;
 //was commented by agg23
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 	vrc7_mixed snd_vrc7 (
 		.clk(clk),
 		.ce(ce),
@@ -2528,7 +2536,7 @@ endgenerate
 wire [15:0] vrc6_audio;
 
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET3 == 1'b1) begin
 		vrc6_mixed snd_vrc6 (
 			.clk(clk),
 			.ce(ce),
