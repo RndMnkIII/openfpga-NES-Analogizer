@@ -14,12 +14,13 @@
 // CHR-VRAM  = 1100
 // CPU-RAM   = 1110
 // CARTRAM   = 1111
-
+//SET1 mapper codes:
+//
+//SET2 mapper codes:5,69,24,26,85,210,19,20,31,69
 module cart_top
 #(
-    parameter reg USE_MMAPPER_SET1 = 1'b0,
-    parameter reg USE_MMAPPER_SET2 = 1'b1,
-	parameter reg USE_MMAPPER_SET3 = 1'b0
+    parameter reg USE_MMAPPER_SET1 = 1'b0, //all mappers except audio mappers
+    parameter reg USE_MMAPPER_SET2 = 1'b1  //all audio mappers
 ) (
 	input             clk,
 	input             ce,             // M2
@@ -127,7 +128,7 @@ MMC0 mmc0(
 // Games  : Simon's Quest                                                      //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		MMC1 mmc1(
 			.clk        (clk),
 			.ce         (ce),
@@ -169,7 +170,7 @@ endgenerate
 // Games  : Donkey Kong                                                        //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		wire mapper28_en = me[0] | me[2] | me[3] | me[7] | me[94] | me[97] | me[180] | me[185] | me[28];
 		Mapper28 map28(
 			.clk        (clk),
@@ -213,7 +214,7 @@ endgenerate
 // Games  : ?                                                                  //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper30 map30(
 			.clk        (clk),
 			.ce         (ce),
@@ -255,7 +256,7 @@ endgenerate
 // Games  : Image Fight                                                        //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 	Mapper32 map32(
 		.clk        (clk),
 		.ce         (ce),
@@ -297,7 +298,7 @@ endgenerate
 // Games  : Mike Tyson's Punch-Out                                             //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		MMC2 mmc2(
 			.clk        (clk),
 			.ce         (ce),
@@ -344,7 +345,7 @@ endgenerate
 //*****************************************************************************//
 generate
     //if (USE_MMAPPER_SET1 == 1'b1) begin
-	if (USE_MMAPPER_SET2 == 1'b1) begin	
+	if (USE_MMAPPER_SET1 == 1'b1) begin	
 		wire mmc3_en = me[118] | me[119] | me[47] | me[206] | me[112] | me[88] | me[154] | me[95]
 			| me[76] | me[80] | me[82] | me[207] | me[48] | me[33] | me[37] | me[74] | me[191]
 			| me[192] | me[194] | me[195] | me[196] | me[4] | me[189] | me[268];
@@ -394,7 +395,7 @@ endgenerate
 // Games  : Fire Emblem                                                        //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		MMC4 mmc4(
 			.clk        (clk),
 			.ce         (ce),
@@ -439,7 +440,7 @@ endgenerate
 // Games  : Castlevania III, Just Breed                                        //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 MMC5 mmc5(
 	.clk        (clk),
 	.ce         (ce),
@@ -496,7 +497,7 @@ endgenerate
 // Games  : Videomation                                                        //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper13 map13(
 			.clk        (clk),
 			.ce         (ce),
@@ -531,7 +532,7 @@ endgenerate
 // Games  : Bao Xiao San Guo                                                   //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper15 map15(
 			.clk        (clk),
 			.ce         (ce),
@@ -569,7 +570,8 @@ wire map16_prg_write, map16_ovr;
 wire [7:0] map16_data_out;
 wire [17:0] map16_mapper_addr;
 generate
-	if (USE_MMAPPER_SET2 == 1'b1) begin	
+    //if (USE_MMAPPER_SET1 == 1'b1) begin
+	if (USE_MMAPPER_SET1 == 1'b1) begin	
 		Mapper16 map16(
 			.clk        (clk),
 			.ce         (ce),
@@ -617,7 +619,7 @@ endgenerate
 // Games  : Pizza Pop!, Plasma Ball, USA Ice Hockey in FC                      //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper18 map18(
 			.clk        (clk),
 			.ce         (ce),
@@ -659,7 +661,7 @@ endgenerate
 // Games  : Mashou, Deadly Towers                                              //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper34 map34(
 			.clk        (clk),
 			.ce         (ce),
@@ -701,7 +703,7 @@ endgenerate
 // Games  : Caltron 6-in-1                                                     //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper41 map41(
 			.clk        (clk),
 			.ce         (ce),
@@ -736,7 +738,7 @@ endgenerate
 // Games  : Love Warrior Nicol, Green Beret (unl)                              //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper42 map42(
 			.clk        (clk),
 			.ce         (ce),
@@ -771,7 +773,7 @@ endgenerate
 // Games  : Spartan X 2, Daiku no Gen-san 2                                    //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper65 map65(
 			.clk        (clk),
 			.ce         (ce),
@@ -813,7 +815,7 @@ endgenerate
 // Games  : Doraemon, Dragon Power, Sidewinder (145), Taiwan Mahjong 16 (149)  //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		wire mapper66_en = me[11] | me[38] | me[46] | me[86] | me[87] | me[101] | me[140] | me[66] | me[145] | me[149];
 		Mapper66 map66(
 			.clk        (clk),
@@ -856,7 +858,7 @@ endgenerate
 // Games  : Fantasy Zone II, Mito Koumon                                       //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper67 map67(
 			.clk        (clk),
 			.ce         (ce),
@@ -898,7 +900,7 @@ endgenerate
 // Games  : After Burner (J), Majaraja                                         //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper68 map68(
 			.clk        (clk),
 			.ce         (ce),
@@ -940,7 +942,7 @@ endgenerate
 // Games  : Gimmick!, Barcode World, Hebereke                                  //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		Mapper69 map69(
 			.clk        (clk),
 			.ce         (ce),
@@ -982,7 +984,7 @@ endgenerate
 // Games  : Micro Machines, Big Nose the Caveman                               //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper71 map71(
 			.clk        (clk),
 			.ce         (ce),
@@ -1024,7 +1026,7 @@ endgenerate
 // Games  : Pro Tennis (J), Pinball Quest (J), Pro Soccer (J)                  //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper72 map72(
 			.clk        (clk),
 			.ce         (ce),
@@ -1066,7 +1068,7 @@ endgenerate
 // Games  : Napoleon Senki                                                     //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper77 map77(
 			.clk        (clk),
 			.ce         (ce),
@@ -1108,7 +1110,7 @@ endgenerate
 // Games  : Holy Diver, Uchuusent                                              //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper78 map78(
 			.clk        (clk),
 			.ce         (ce),
@@ -1151,7 +1153,7 @@ endgenerate
 //          Twin Eagle (146), Mahjong World (148), Jovial Race (133)           //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper79 map79(
 			.clk        (clk),
 			.ce         (ce),
@@ -1193,7 +1195,7 @@ endgenerate
 // Games  : Fatal Fury 2, World Heroes 2, Dragon Ball Party                    //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper83 map83(
 			.clk        (clk),
 			.ce         (ce),
@@ -1228,7 +1230,7 @@ endgenerate
 // Games  : Tenka no Goikenban                                                 //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper89 map89(
 			.clk        (clk),
 			.ce         (ce),
@@ -1270,7 +1272,7 @@ endgenerate
 // Games  : Magic Dragon                                                       //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper107 map107(
 			.clk        (clk),
 			.ce         (ce),
@@ -1305,7 +1307,7 @@ endgenerate
 // Games  : Super Homebrew War, Candelabra: Estoscerro, more homebrew          //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper111 map111(
 			.clk        (clk),
 			.ce         (ce),
@@ -1347,7 +1349,7 @@ endgenerate
 // Games  : Fire Emblem (unl)                                                  //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper165 map165(
 			.clk        (clk),
 			.ce         (ce),
@@ -1386,7 +1388,7 @@ endgenerate
 // Games  : Magic Floor                                                        //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper218 map218(
 			.clk        (clk),
 			.ce         (ce),
@@ -1423,7 +1425,7 @@ endgenerate
 // Games  : 1200-in-1, 600-in-1, Bio Hazard                                    //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper227 map227(
 			.clk        (clk),
 			.ce         (ce),
@@ -1458,7 +1460,7 @@ endgenerate
 // Games  : Cheetamen                                                          //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper228 map228(
 			.clk        (clk),
 			.ce         (ce),
@@ -1495,7 +1497,7 @@ endgenerate
 // Games  : Maxi-15 Pack (unl)                                                 //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper234 map234(
 			.clk        (clk),
 			.ce         (ce),
@@ -1530,7 +1532,7 @@ endgenerate
 // Games  : Feng Shen Bang                                                     //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 Mapper246 map246(
 			.clk        (clk),
 			.ce         (ce),
@@ -1565,7 +1567,7 @@ endgenerate
 // Games  : Rolling Thunder, Klax, Skull and Crossbones, Alien Syndrome (158)  //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Rambo1 rambo1(
 			.clk        (clk),
 			.ce         (ce),
@@ -1609,7 +1611,7 @@ endgenerate
 // Games  : Nintendo World Championships 1990 (start hack)                     //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		NesEvent nesev(
 			.clk        (clk),
 			.ce         (ce),
@@ -1644,7 +1646,7 @@ endgenerate
 // Games  : King Kong 2, Exciting Boxing, Tetsuwan Atom                        //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		VRC1 vrc1(
 			.clk        (clk),
 			.ce         (ce),
@@ -1686,7 +1688,7 @@ endgenerate
 // Games  : Salamander (j)                                                     //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		VRC3 vrc3(
 			.clk        (clk),
 			.ce         (ce),
@@ -1728,7 +1730,7 @@ endgenerate
 // Games  : Wai Wai World 2, Twinbee 3, Contra (j), Gradius II (j)             //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		VRC24 vrc24(
 			.clk        (clk),
 			.ce         (ce),
@@ -1770,7 +1772,7 @@ endgenerate
 // Games  : Konami Q-Ta (Space School and Space College (J))                   //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		VRC5 vrc5(
 			.clk        (clk),
 			.ce         (ce),
@@ -1824,7 +1826,7 @@ endgenerate
 // Games  : Akamajou Densetsu, Esper Dream 2, Mouryou Senki Madara             //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		VRC6 vrc6(
 			.clk        (clk),
 			.ce         (ce),
@@ -1866,7 +1868,7 @@ endgenerate
 // Games  : Lagrange Point, Tiny Toon Aventures 2 (j)                          //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		VRC7 vrc7(
 			.clk        (clk),
 			.ce         (ce),
@@ -1901,7 +1903,7 @@ endgenerate
 // Games  : Digital Devil Story, Battle Fleet, Famista                         //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		N163 n163(
 			.clk        (clk),
 			.ce         (ce),
@@ -1945,7 +1947,7 @@ endgenerate
 // Games  : Zelda - San Shen Zhi Li                                            //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper162 map162(
 			.clk        (clk),
 			.ce         (ce),
@@ -1980,7 +1982,7 @@ endgenerate
 // Games  : Final Fantasy VII (163), Pokemon Yellow (163)                      //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Nanjing map163(
 			.clk        (clk),
 			.ce         (ce),
@@ -2017,7 +2019,7 @@ endgenerate
 // Games  : Final Fantasy V                                                    //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper164 map164(
 			.clk        (clk),
 			.ce         (ce),
@@ -2053,7 +2055,7 @@ endgenerate
 //          Super Cart 6 - 6 in 1(141), Strategist (150), Poker III (243)      //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Sachen8259 sachen(
 			.clk        (clk),
 			.ce         (ce),
@@ -2096,7 +2098,7 @@ endgenerate
 //          F-15 City War (173), Mahjong Block (172), Strike Wolf (36)         //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		SachenJV001 sachenj(
 			.clk        (clk),
 			.ce         (ce),
@@ -2138,7 +2140,7 @@ endgenerate
 // Games  : Dancing Blocks, Magical Mathematics                                //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		SachenNROM sachenn(
 			.clk        (clk),
 			.ce         (ce),
@@ -2176,7 +2178,8 @@ endgenerate
 //          Tiny Toon Adventures 6 (211)                                       //
 //*****************************************************************************//
 generate
-	if (USE_MMAPPER_SET2 == 1'b1) begin	
+    //if (USE_MMAPPER_SET1 == 1'b1) begin
+	if (USE_MMAPPER_SET1 == 1'b1) begin	
 		JYCompany jycompany(
 			.clk        (clk),
 			.ce         (ce),
@@ -2223,7 +2226,7 @@ endgenerate
 //          1995 Super HIK 4-in-1 (JY-016), 1995 Super HiK 4-in-1 (JY-017)     //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper91 map91(
 			.clk        (clk),
 			.ce         (ce),
@@ -2259,7 +2262,7 @@ endgenerate
 // Games  : 64-in-1 (225), 110-in-1 (255 - with glitched menu selection)       //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper225 map225(
 			.clk        (clk),
 			.ce         (ce),
@@ -2294,7 +2297,7 @@ endgenerate
 // Games  : Super Russian Roulette                                             //
 //*****************************************************************************//
 generate
-    if (USE_MMAPPER_SET2 == 1'b1) begin
+    if (USE_MMAPPER_SET1 == 1'b1) begin
 		Mapper413 map413 (
 			.clk        (clk),
 			.ce         (ce),
@@ -2335,7 +2338,7 @@ endgenerate
 //*****************************************************************************//
 tri0 [1:0] fds_diskside;
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		MapperFDS mapfds(
 			.clk        (clk),
 			.ce         (ce),
@@ -2378,8 +2381,10 @@ endgenerate
 // Games  : Famicompo Pico 2014, NSF 1.0                                       //
 //*****************************************************************************//
 wire [5:0] exp_audioe;
+
+//was commented by agg23
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		NSF nsfplayer(
 			.clk        (clk),
 			.ce         (ce),
@@ -2417,7 +2422,7 @@ endgenerate
 
 wire [15:0] ss5b_audio;
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		SS5b_mixed snd_5bm (
 			.clk(clk),
 			.ce(ce),
@@ -2441,7 +2446,7 @@ endgenerate
 wire [15:0] n163_audio;
 wire [7:0] n163_data;
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		namco163_mixed snd_n163 (
 			.clk(clk),
 			.ce(ce),
@@ -2475,7 +2480,7 @@ wire [15:0] mmc5_audio;
 wire [7:0] mmc5_data;
 
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		mmc5_mixed snd_mmc5 (
 			.clk(clk),
 			.ce(ce),
@@ -2502,7 +2507,7 @@ wire [15:0] fds_audio;
 wire [7:0] fds_data;
 //was commented by agg23
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		fds_mixed snd_fds (
 			.clk(clk),
 			.ce(ce),
@@ -2520,7 +2525,7 @@ endgenerate
 wire [15:0] vrc7_audio;
 //was commented by agg23
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 	vrc7_mixed snd_vrc7 (
 		.clk(clk),
 		.ce(ce),
@@ -2536,7 +2541,7 @@ endgenerate
 wire [15:0] vrc6_audio;
 
 generate
-    if (USE_MMAPPER_SET3 == 1'b1) begin
+    if (USE_MMAPPER_SET2 == 1'b1) begin
 		vrc6_mixed snd_vrc6 (
 			.clk(clk),
 			.ce(ce),
