@@ -29,14 +29,14 @@
     },
     "cores": [
       {
-        "name": "set1_normal",
+        "name": "set1_no",
         "id": 0,
-        "filename": "nes_set1_normal.rev"
+        "filename": "nes_set1.rev"
       },
       {
-        "name": "set2_audio",
+        "name": "set2_au",
         "id": 1,
-        "filename": "nes_set2_audio.rev"
+        "filename": "nes_set2.rev"
       }
     ]
   }
