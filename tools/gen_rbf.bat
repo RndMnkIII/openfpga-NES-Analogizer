@@ -1,1 +1,2 @@
-reverse_bits.exe nes_pocket.rbf nes.rev
+reverse_bits.exe nes_set1_normal.rbf nes_set1_normal.rev
+reverse_bits.exe nes_set2_audio.rbf nes_set2_audio.rev

@@ -10,8 +10,8 @@
       "description": "[Analogizer] Nintendo Entertainment System and Famicom. Nintendo's first home console",
       "author": "agg23",
       "url": "https://github.com/RndMnkIII/openfpga-NES-Analogizer",
-      "version": "1.0.2",
-      "date_release": "2025-02-11"
+      "version": "1.0.3",
+      "date_release": "2025-02-27"
     },
     "framework": {
       "target_product": "Analogue Pocket",
@@ -24,13 +24,19 @@
       "hardware": {
         "link_port": false,
         "cartridge_adapter": 0
-      }
+      },
+      "chip32_vm": "nes_loader.bin"
     },
     "cores": [
       {
-        "name": "default",
+        "name": "set1_normal",
         "id": 0,
-        "filename": "nes.rev"
+        "filename": "nes_set1_normal.rev"
+      },
+      {
+        "name": "set2_audio",
+        "id": 1,
+        "filename": "nes_set2_audio.rev"
       }
     ]
   }
