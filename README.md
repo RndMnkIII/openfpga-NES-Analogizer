@@ -9,6 +9,9 @@ check the NES ROM header al calculates the mapper code and load the bistream wit
 reduces the logic resources required (divides the mapper code into two blocks). Thanks to @agg23 by his help.
 This is based in the method used by @agg23 for the openFPGA SNES core.
 
+This Analogizer core uses a configuration file to select Analogizer adapter options, not based on the Pocket's menu system. It is necessary to run an external utility [Pupdate](https://github.com/mattpannella/pupdate) or [AnalogizerConfigurator](https://github.com/RndMnkIII/AnalogizerConfigurator)  to generate such a file. Once generated, you must copy the `analogizer.bin` file to the `/Assets/analogizer/common` folder on the Pocket SD card. If this folder does not exist, you must create it or if you have already extracted the Amiga core distribution file it will be created. Check the refered utility for the relevant options for the Analogizer adapter: SNAC controller, SNAC controller assigments (how to map physical SNAC game controllers to the Pocket openFPGA framework PAD format), Video output and Blank the Pocket Screen (On/Off).
+
+This utility allows you to do a few things beyond the usual SNAC controller type and assignment, or video output type and blank of the Pocket screen.
 
 Tested NES SNAC adapters working with the Zapper lightgun:
 * https://ultimatemister.com/product/ultimate-snac-mini-hdmi/
@@ -44,12 +47,8 @@ Analogizer support added by RndMnkIII. See more in the Analogizer main repositor
 
 Adapted to Analogizer by [@RndMnkIII](https://github.com/RndMnkIII) based on **agg23** NES for Analogue Pocket:
 https://github.com/agg23/openfpga-NES
-  
-This Analogizer core uses a configuration file to select Analogizer adapter options, not based on the Pocket's menu system. It is necessary to run an external utility [Pupdate](https://github.com/mattpannella/pupdate) or [AnalogizerConfigurator](https://github.com/RndMnkIII/AnalogizerConfigurator)  to generate such a file. Once generated, you must copy the `analogizer.bin` file to the `/Assets/analogizer/common` folder on the Pocket SD card. If this folder does not exist, you must create it or if you have already extracted the Amiga core distribution file it will be created. Check the refered utility for the relevant options for the Analogizer adapter: SNAC controller, SNAC controller assigments (how to map physical SNAC game controllers to the Pocket openFPGA framework PAD format), Video output and Blank the Pocket Screen (On/Off).
 
-This utility allows you to do a few things beyond the usual SNAC controller type and assignment, or video output type and blank of the Pocket screen.
-
-The core can output RGBS, RGsB, YPbPr, Y/C and SVGA scandoubler (50% scanlines) video signals.
+The core can output RGBS, RGsB, YPbPr, Y/C and SVGA scandoubler (0%, 25%, 50%, 75% scanlines) video signals.
 | Video output | Status | SOG Switch(Only R2,R3 Analogizer) |
 | :----------- | :----: | :-------------------------------: |     
 | RGBS         |  ✅    |     Off                           |
