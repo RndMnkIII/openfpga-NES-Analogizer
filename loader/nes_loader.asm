@@ -76,20 +76,20 @@ ld r1,#0x10 // Load 0x10 bytes, the NES/NES2 header size
 ld r2,#load_header_area // Read into read_space memory
 read()
 close
-
 log_string("Loaded header data")
 ld.l r3,(load_header_area)
 
-ld r1,#analogizer_dataslot //populate data slot
-open r1,r2
+//*** Analogizer configuration code ***
+//ld r1,#analogizer_dataslot //populate data slot
+//open r1,r2
 
 //Load analogizer configuration into memory
-seek2()
-ld r1,#0x4 // Load 0x4 bytes
-ld r2,#load_analogizer_cfg_area // Read into read_space memory
-read2()
-close
-log_string("Loaded Analogizer configuration data")
+//seek2()
+//ld r1,#0x4 // Load 0x4 bytes
+//ld r2,#load_analogizer_cfg_area // Read into read_space memory
+//read2()
+//close
+//log_string("Loaded Analogizer configuration data")
 
 
 //Check that is a valid NES header
