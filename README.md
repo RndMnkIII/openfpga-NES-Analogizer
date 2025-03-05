@@ -8,15 +8,12 @@ This method divides the core in two bitstreams each one with a specific support 
 check the NES ROM header al calculates the mapper code and load the bistream with the required mapper. This
 reduces the logic resources required (divides the mapper code into two blocks). Thanks to @agg23 by his help.
 This is based in the method used by @agg23 for the openFPGA SNES core.
-<<<<<<< HEAD
 * Analogizer V1.0.4 [05/03/2025]: Using customized Chip32 loader enables to run at correct speed PAL roms. This is based entirely on NES ROMS with 2.0 header or default NTSC settings will be used.
-Please make sure your PAL ROM has an iNES 2.0 header before reporting that the PAL ROM is not working properly. You can use this tool to check the ROM: [NES Mapper](https://www.romhacking.net/download/utilities/683/)
-=======
+Please make sure your PAL ROM has an iNES 2.0 header before reporting that the PAL ROM is not working properly. You can use this tool to check the ROM, the ma: [NES Mapper](https://www.romhacking.net/download/utilities/683/). Most NES ROMs already support this format
 
-This Analogizer core uses a configuration file to select Analogizer adapter options, not based on the Pocket's menu system. It is necessary to run an external utility [Pupdate](https://github.com/mattpannella/pupdate) or [AnalogizerConfigurator](https://github.com/RndMnkIII/AnalogizerConfigurator)  to generate such a file. Once generated, you must copy the `analogizer.bin` file to the `/Assets/analogizer/common` folder on the Pocket SD card. If this folder does not exist, you must create it. Check the refered utility for the relevant options for the Analogizer adapter: SNAC controller, SNAC controller assigments (how to map physical SNAC game controllers to the Pocket openFPGA framework PAD format), Video output and Blank the Pocket Screen (On/Off).
+This Analogizer core uses a configuration file to select Analogizer adapter options, not based on the Pocket's menu system. It is necessary to run an external utility Pupdate or AnalogizerConfigurator to generate such a file. Once generated, you must copy the analogizer.bin file to the /Assets/analogizer/common folder on the Pocket SD card. If this folder does not exist, you must create it. Check the refered utility for the relevant options for the Analogizer adapter: SNAC controller, SNAC controller assigments (how to map physical SNAC game controllers to the Pocket openFPGA framework PAD format), Video output and Blank the Pocket Screen (On/Off).
 
 This utility allows you to do a few things beyond the usual SNAC controller type and assignment, or video output type and blank of the Pocket screen.
->>>>>>> 2238964c2682bcfa2eb0e4ae58d9a2ceaa7ca8d4
 
 Tested NES SNAC adapters working with the Zapper lightgun:
 * https://ultimatemister.com/product/ultimate-snac-mini-hdmi/
@@ -53,7 +50,7 @@ Analogizer support added by RndMnkIII. See more in the Analogizer main repositor
 Adapted to Analogizer by [@RndMnkIII](https://github.com/RndMnkIII) based on **agg23** NES for Analogue Pocket:
 https://github.com/agg23/openfpga-NES
 
-The core can output RGBS, RGsB, YPbPr, Y/C and SVGA scandoubler (0%, 25%, 50%, 75% scanlines) video signals.
+The core can output RGBS, RGsB, YPbPr, Y/C and SVGA scandoubler (50% scanlines) video signals.
 | Video output | Status | SOG Switch(Only R2,R3 Analogizer) |
 | :----------- | :----: | :-------------------------------: |     
 | RGBS         |  ✅    |     Off                           |
