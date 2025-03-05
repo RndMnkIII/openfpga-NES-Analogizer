@@ -1,7 +1,15 @@
 //Chip32 loader code for Analogizer NES Core
 //RndMnkIII. 25/02/2025.
 //This code is based on the work of @agg23 openFPGA SNES core: https://github.com/agg23/openfpga-SNES
-// 
+// Pseudocode:
+// Check that is a iNES2.0 HEADER
+// If it is a iNES2.0 Header Read the System Type Code: NTSC,PAL,Multisystem,Dendy(as PAL but compatible with NTSC ROMs)
+// set the SysType to he readed code
+// Load by default core NTSC
+// If is MultiSystem read the FPGA space user setting for System Preference: if is Auto>NTSC, Auto>PAL or Auto>Dendy and assign type to NTSC,PAL or Dendy
+// If is NTSC,PAL or Dendy and user setting Auto>... Choose the one from header setting. If the user setting is Force NTSC,PAL or Dendy, ignore header
+// setting and assign the System Type based on User preference.
+// If the header is not a iNES2.0 HEADER choose by default NTSC. If the user setting is Force NTSC,PAL or Dendy assign the System Type based on User preference.
 arch chip32.vm
 output "nes_loader.bin", create
 
@@ -9,6 +17,7 @@ constant DEBUG = 1
 
 //NES Cartridge data slot (see data.json core file)
 constant rom_dataslot = 0 
+
 //Save state data slot
 constant save_dataslot = 10
 constant pal_dataslot = 11
@@ -19,6 +28,8 @@ constant analogizer_dataslot = 20
 constant num_audio_mappers = 9
 
 // Host init command
+constant put_core_reset = 0x4000
+constant core_take_out_reset = 0x4001
 constant host_init = 0x4002
 
 //Addresses
@@ -36,6 +47,7 @@ constant is_nes_head = 0x1010
 constant dirty_nes_head = 0x1014
 constant nes20mapper = 0x1018
 constant load_header_area = 0x1A00
+constant load_analogizer_cfg_area = 0x1B00
 
 
 // Error vector (0x0)
@@ -63,9 +75,21 @@ seek()
 ld r1,#0x10 // Load 0x10 bytes, the NES/NES2 header size
 ld r2,#load_header_area // Read into read_space memory
 read()
+close
 
 log_string("Loaded header data")
 ld.l r3,(load_header_area)
+
+ld r1,#analogizer_dataslot //populate data slot
+open r1,r2
+
+//Load analogizer configuration into memory
+seek2()
+ld r1,#0x4 // Load 0x4 bytes
+ld r2,#load_analogizer_cfg_area // Read into read_space memory
+read2()
+close
+log_string("Loaded Analogizer configuration data")
 
 
 //Check that is a valid NES header
@@ -204,7 +228,7 @@ check_mmapper_code:
 
 check_mapper_code_loop:
 	cmp r4,r3 //check if all cores were already checked
-	jp z, load_core
+	jp z, check_system
 
 	ld.w r7,(r6) //load the current code to check
 	cmp r7,r9 //if are equal assign set2 mapper and exit loop
@@ -218,13 +242,24 @@ block_set2:
 	log_string("Mapper is set Block2 (audio mapper)...")
 	ld r12,#1 //mapper set block2 (audio mappers)
 
-load_core:
-	//file is no longer needed
-	close
-	//load the core based on mapper code selection
-	core r12 //core #0  Block 1, core #1 Block 2 (audio mappers)
-	
+check_system:
+    log_string("*** Checking system ***")
+	ld r8,#0 //by default use NTSC system
+	ld r4,#0 //default region is NTSC
+	//check is ines2.0
+	bit r10,#1
+	jp z, load_core
+	ld.b r8,(load_header_area + 0xC) //System for iNES2.0
+	and r8,#3 //use two lower bits	
+	ld r4,r8 //copy region value to r4
+	and r8,#1 //take one bit 0 on r3   00 NTSC 01 PAL 10 Multi-System 11 Dendy(PAL)
+	asl r8,#1 //multiply by 2
+	or r12,r8 //add r3 to r12 now the bitstream to load is encoded into r12
 
+load_core:
+	//load the core based on mapper code selection and region setting
+	core r12 //core #0 NTSC Block 1, core #1 NTSC Block 2 (audio mappers), core #2 PAL/Dendy Block 1, core #3 PAL/Dendy Block 2 (audio mappers) 
+	
 load_settings:
 	//load assets files
 	ld r1,#rom_dataslot
@@ -239,6 +274,10 @@ load_settings:
 	ld r1,#analogizer_dataslot
 	loadf r1 // Load Analogizer settings
 
+	//Send region to the CORE at address 0x330
+	ld r8,#0x330
+	pmpw r8,r4
+	
 	// Start core
 	ld r0,#host_init
 	host r0,r0

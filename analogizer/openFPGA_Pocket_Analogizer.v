@@ -147,25 +147,25 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 	//reg [31:0] analogizer_bridge_rd_data;
 	reg  [31:0] analogizer_config = 0;
 	wire [31:0]   analogizer_config_s;
-	reg [31:0] config_mem [16]; //configuration memory
+	// reg [31:0] config_mem [16]; //configuration memory
 	
 	synch_3 #(.WIDTH(32)) analogizer_sync(analogizer_config, analogizer_config_s, i_clk);
 
-	wire [31:0] memory_out;
-	reg [3:0] word_cnt;
+	//wire [31:0] memory_out;
+	//reg [3:0] word_cnt;
 	// handle memory mapped I/O from pocket
 	always @(posedge clk_74a) begin
 		if(bridge_wr) begin
 			case(bridge_addr[31:24])
 			ADDRESS_ANALOGIZER_CONFIG: begin
 				if (bridge_addr[3:0] == 4'h0) begin
-					word_cnt <= 4'h1;
+					//word_cnt <= 4'h1;
 					analogizer_config <= bridge_endian_little ? bridge_wr_data  : {bridge_wr_data[7:0],bridge_wr_data[15:8],bridge_wr_data[23:16],bridge_wr_data[31:24]}; 
 				end
-				else begin
-					word_cnt <= word_cnt + 4'h1;
-					config_mem[bridge_addr[3:0]] <= bridge_endian_little ? bridge_wr_data  : {bridge_wr_data[7:0],bridge_wr_data[15:8],bridge_wr_data[23:16],bridge_wr_data[31:24]}; 
-				end
+				// else begin
+				// 	word_cnt <= word_cnt + 4'h1;
+				// 	config_mem[bridge_addr[3:0]] <= bridge_endian_little ? bridge_wr_data  : {bridge_wr_data[7:0],bridge_wr_data[15:8],bridge_wr_data[23:16],bridge_wr_data[31:24]}; 
+				// end
 			end
 			endcase
 		end
@@ -173,12 +173,12 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 			case(bridge_addr[31:24])
 			ADDRESS_ANALOGIZER_CONFIG: begin
 				if (bridge_addr[3:0] == 4'h0) analogizer_bridge_rd_data <= bridge_endian_little ?  analogizer_config_s : {analogizer_config_s[7:0],analogizer_config_s[15:8],analogizer_config_s[23:16],analogizer_config_s[31:24]}; //invert byte order to writeback to the Sav folders
-				else analogizer_bridge_rd_data <= bridge_endian_little ? config_mem[bridge_addr[3:0]] : {memory_out[7:0],memory_out[15:8],memory_out[23:16],memory_out[31:24]};
+				//else analogizer_bridge_rd_data <= bridge_endian_little ? config_mem[bridge_addr[3:0]] : {memory_out[7:0],memory_out[15:8],memory_out[23:16],memory_out[31:24]};
 			end
 			endcase
 		end
 	end
-	assign memory_out = config_mem[bridge_addr[3:0]];
+	//assign memory_out = config_mem[bridge_addr[3:0]];
 
   always @(posedge i_clk) begin
     snac_game_cont_type   <= analogizer_config_s[4:0];

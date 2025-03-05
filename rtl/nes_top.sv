@@ -66,6 +66,7 @@ module nes_top (
     input wire [1:0] mask_vid_edges,
     input wire allow_extra_sprites,
     input wire [2:0] selected_palette,
+    input 		  dejitter_timing,
 
     input wire multitap_enabled,
     input wire [1:0] lightgun_enabled, //added bit one to check for Analogizer SNAC Zapper
@@ -224,6 +225,7 @@ module nes_top (
       .cycle         (cycle),
       .scanline      (scanline),
       .mask          (mask_vid_edges),
+      .dejitter_timing(dejitter_timing),
       // User Input
       .joypad_out    (joypad_out),
       .joypad_clock  (joypad_clock),

@@ -3,12 +3,13 @@
 * Analogizer V1.0.0 [30/03/2024]: Initial Analogizer support release
 * Analogizer V1.0.1 [13/07/2024]: Added support for Y/C video and Scandoubler RGBHV. The savestate support was removed to make room for Analogizer features.
 * Analogizer V1.0.2 [12/02/2025]: Added support for Analogizer configuration file, PSX SNAC gamecontrollers and NES SNAC Zapper lightgun.
-* * Analogizer V1.0.3 [27/02/2025]: Using customized Chip32 loader code the core recovers the savestate support.
+* Analogizer V1.0.3 [27/02/2025]: Using customized Chip32 loader code the core recovers the savestate support.
 This method divides the core in two bitstreams each one with a specific support for mappers. The Chip32 loader
 check the NES ROM header al calculates the mapper code and load the bistream with the required mapper. This
 reduces the logic resources required (divides the mapper code into two blocks). Thanks to @agg23 by his help.
 This is based in the method used by @agg23 for the openFPGA SNES core.
-
+* Analogizer V1.0.4 [05/03/2025]: Using customized Chip32 loader enables to run at correct speed PAL roms. This is based entirely on NES ROMS with 2.0 header or default NTSC settings will be used.
+Please make sure your PAL ROM has an iNES 2.0 header before reporting that the PAL ROM is not working properly. You can use this tool to check the ROM: [NES Mapper](https://www.romhacking.net/download/utilities/683/)
 
 Tested NES SNAC adapters working with the Zapper lightgun:
 * https://ultimatemister.com/product/ultimate-snac-mini-hdmi/
