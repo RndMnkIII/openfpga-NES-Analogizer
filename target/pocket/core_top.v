@@ -924,6 +924,7 @@ generate
         .Csync(SYNC),
 
         //openFPGA Bridge interface
+        .bridge_endian_little(bridge_endian_little),
         .bridge_addr(bridge_addr),
         .bridge_rd(bridge_rd),
         .analogizer_bridge_rd_data(analogizer_bridge_rd_data),
@@ -972,7 +973,7 @@ generate
   else begin
           openFPGA_Pocket_Analogizer #(.MASTER_CLK_FREQ(42_562_736), .LINE_LENGTH(260), 
                                   .ADDRESS_ANALOGIZER_CONFIG(ADDRESS_ANALOGIZER_CONFIG),
-                                  .USE_OLD_STYLE_SVGA_SCANDOUBLER(1'b0)) 
+                                  .USE_OLD_STYLE_SVGA_SCANDOUBLER(1'b1)) 
                                 analogizer (
         .clk_74a(clk_74a),
         .i_clk(clk_analogizer),
@@ -992,6 +993,7 @@ generate
         .Csync(SYNC),
 
         //openFPGA Bridge interface
+        .bridge_endian_little(bridge_endian_little),
         .bridge_addr(bridge_addr),
         .bridge_rd(bridge_rd),
         .analogizer_bridge_rd_data(analogizer_bridge_rd_data),

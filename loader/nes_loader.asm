@@ -253,18 +253,9 @@ check_system:
 	ld.b r8,(load_header_area + 0xC) //System for iNES2.0
 	and r8,#3 //use two lower bits	
 	ld r4,r8 //copy region value to r4
-	and r8,#1 //take one bit 0 on r3   00 NTSC 01 PAL 10 Multi-System 11 Dendy(PAL)
-
-	//check if system is PAL or Dendy, then the bitstrem will be the #2
-	bit r8,#1
-	jp z, load_core
-	ld r12,#2 //bitstream #2 PAL
-	log_string("*** Loading PAL bitstream ***")
-	jp load_core
-
-//is_no_pal:
-//	asl r8,#1 //multiply by 2
-//	or r12,r8 //add r3 to r12 now the NTSC bitstream to load is encoded into r12
+	and r8,#1 //take one bit 0 on r8   00 NTSC 01 PAL 10 Multi-System 11 Dendy(PAL)
+    asl r8,#1 //multiply by 2
+    or r12,r8 //add r3 to r12 now the bitstream to load is encoded into r12
 
 load_core:
 	//load the core based on mapper code selection and region setting

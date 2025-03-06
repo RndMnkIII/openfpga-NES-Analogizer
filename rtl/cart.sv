@@ -19,8 +19,8 @@
 //SET2 mapper codes:5,69,24,26,85,210,19,20,31,69
 module cart_top
 #(
-    parameter reg USE_MMAPPER_SET1 = 1'b1, //all mappers except audio mappers
-    parameter reg USE_MMAPPER_SET2 = 1'b0  //all audio mappers
+    parameter reg USE_MMAPPER_SET1 = 1'b0, //all mappers except audio mappers
+    parameter reg USE_MMAPPER_SET2 = 1'b1  //all audio mappers
 ) (
 	input             clk,
 	input             ce,             // M2
