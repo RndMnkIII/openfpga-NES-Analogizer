@@ -9,7 +9,8 @@ check the NES ROM header al calculates the mapper code and load the bistream wit
 reduces the logic resources required (divides the mapper code into two blocks). Thanks to @agg23 by his help.
 This is based in the method used by @agg23 for the openFPGA SNES core.
 * Analogizer V1.0.4 [05/03/2025]: Using customized Chip32 loader enables to run at correct speed PAL roms. This is based entirely on NES ROMS with 2.0 header or default NTSC settings will be used.
-Please make sure your PAL ROM has an iNES 2.0 header before reporting that the PAL ROM is not working properly. You can use this tool to check the ROM, the ma: [NES Mapper](https://www.romhacking.net/download/utilities/683/). Most NES ROMs already support this format
+Please make sure your PAL ROM has an iNES 2.0 header before reporting that the PAL ROM is not working properly. You can use this tool to check the ROM, the ma: [NES Mapper](https://www.romhacking.net/download/utilities/683/). Most NES ROMs already support this format.
+* Analogizer V1.0.4 [05/03/2025]: Fixed broken PAL bitstream support.
 
 This Analogizer core uses a configuration file to select Analogizer adapter options, not based on the Pocket's menu system. It is necessary to run an external utility Pupdate or AnalogizerConfigurator to generate such a file. Once generated, you must copy the analogizer.bin file to the /Assets/analogizer/common folder on the Pocket SD card. If this folder does not exist, you must create it. Check the refered utility for the relevant options for the Analogizer adapter: SNAC controller, SNAC controller assigments (how to map physical SNAC game controllers to the Pocket openFPGA framework PAD format), Video output and Blank the Pocket Screen (On/Off).
 

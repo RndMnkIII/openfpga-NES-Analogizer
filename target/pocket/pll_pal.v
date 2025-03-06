@@ -103,7 +103,7 @@ endmodule
 // Retrieval info: 	<generic name="gui_cascade_counter3" value="false" />
 // Retrieval info: 	<generic name="gui_output_clock_frequency3" value="5.320342" />
 // Retrieval info: 	<generic name="gui_divide_factor_c3" value="1" />
-// Retrieval info: 	<generic name="gui_actual_output_clock_frequency3" value="0 MHz" />
+// Retrieval info: 	<generic name="gui_actual_output_clock_frequency3" value="5.921771 MHz" />
 // Retrieval info: 	<generic name="gui_ps_units3" value="degrees" />
 // Retrieval info: 	<generic name="gui_phase_shift3" value="0" />
 // Retrieval info: 	<generic name="gui_phase_shift_deg3" value="90.0" />

@@ -120,6 +120,8 @@ module nes_top (
     output wire        dram_we_n,
 
     // Video
+    output ce_pix,
+    output ce_pix90,
     output HSync,
     output VSync,
     output HBlank,
@@ -862,7 +864,8 @@ module nes_top (
       .reticle(lightgun_enabled[0] ? reticle : 2'b00),
       .pal_video(pal_video),
 
-      // .ce_pix(ce_pix),
+      .ce_pix(ce_pix),
+      .ce_pix90(ce_pix90),
       .HSync(HSync),
       .VSync(VSync),
       .HBlank(HBlank),

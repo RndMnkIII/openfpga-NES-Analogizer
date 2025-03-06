@@ -7,7 +7,7 @@
 `default_nettype none
 
 module core_top 
-#(parameter reg USE_PAL_PLL = 1'b0) (
+#(parameter reg USE_PAL_PLL = 1'b1) (
 
     //
     // physical connections
@@ -317,9 +317,9 @@ module core_top
       end else if (bridge_addr[31:28] == 4'h4) begin
         bridge_rd_data <= save_state_bridge_read_data;
       end
-      else if (bridge_addr == 32'h054) begin
-        bridge_rd_data <= bridge_rd_reg; //0 Auto>NTSC, 1 Auto>PAL, 2 Auto>Dendy, 3 Force NTSC, 4 Force PAL, 5 Force Dendy, when the Chip32 loader reads the user preferences
-      end
+      // else if (bridge_addr == 32'h054) begin
+      //   bridge_rd_data <= bridge_rd_reg; //0 Auto>NTSC, 1 Auto>PAL, 2 Auto>Dendy, 3 Force NTSC, 4 Force PAL, 5 Force Dendy, when the Chip32 loader reads the user preferences
+      // end
     end
 
   always @(posedge clk_74a) begin
@@ -327,20 +327,20 @@ module core_top
       reset_delay <= reset_delay - 1;
     end
 
-    if (bridge_rd) begin
-      if (bridge_addr == 32'h054) begin
-            bridge_rd_reg <= system_type; //0 Auto>NTSC, 1 Auto>PAL, 2 Auto>Dendy, 3 Force NTSC, 4 Force PAL, 5 Force Dendy, when the Chip32 loader reads the user preferences
-        end
-    end
+    // if (bridge_rd) begin
+    //   if (bridge_addr == 32'h054) begin
+    //         bridge_rd_reg <= system_type; //0 Auto>NTSC, 1 Auto>PAL, 2 Auto>Dendy, 3 Force NTSC, 4 Force PAL, 5 Force Dendy, when the Chip32 loader reads the user preferences
+    //     end
+    // end
 
     if (bridge_wr) begin
       casex (bridge_addr[11:0])
         12'h050: begin
           reset_delay <= 32'h100000;
         end
-        12'h54: begin
-         system_type <= bridge_wr_data[2:0]; //User Menu System Type preferences
-       end 
+      //   12'h54: begin
+      //    system_type <= bridge_wr_data[2:0]; //User Menu System Type preferences
+      //  end 
        12'h330: begin
          region <= bridge_wr_data[1:0]; //When Chip32 loader writes the region to the Core
        end
@@ -686,7 +686,7 @@ module core_top
   );
 
   // Settings
-  reg [2:0] system_type = 0;
+  //reg [2:0] system_type = 0;
   reg [1:0] region = 0;
   reg video_dejitter = 0;
 
@@ -722,22 +722,22 @@ module core_top
   wire swap_controllers_s;
 
   synch_3 #(
-      .WIDTH(25)
+      .WIDTH(27)
   ) settings_s (
       {
-        region,
-        video_dejitter,
-        hide_overscan,
-        mask_vid_edges,
-        square_pixels,
-        allow_extra_sprites,
-        selected_palette,
-        external_reset,
-        multitap_enabled,
-        lightgun_enabled,
-        lightgun_dpad_aim_speed,
-        turbo_speed,
-        swap_controllers
+        region,                      // 2
+        video_dejitter,              // 1 
+        hide_overscan,               // 1
+        mask_vid_edges,              // 2
+        square_pixels,               // 1
+        allow_extra_sprites,         // 1
+        selected_palette,            // 3  
+        external_reset,              // 1
+        multitap_enabled,            // 1 
+        lightgun_enabled,            // 2
+        lightgun_dpad_aim_speed,     // 8
+        turbo_speed,                 // 3
+        swap_controllers             // 1
       },
       {
         region_s,
@@ -972,7 +972,7 @@ generate
   else begin
           openFPGA_Pocket_Analogizer #(.MASTER_CLK_FREQ(42_562_736), .LINE_LENGTH(260), 
                                   .ADDRESS_ANALOGIZER_CONFIG(ADDRESS_ANALOGIZER_CONFIG),
-                                  .USE_OLD_STYLE_SVGA_SCANDOUBLER(1'b1)) 
+                                  .USE_OLD_STYLE_SVGA_SCANDOUBLER(1'b0)) 
                                 analogizer (
         .clk_74a(clk_74a),
         .i_clk(clk_analogizer),
@@ -1040,7 +1040,6 @@ generate
 endgenerate
 
 /*[ANALOGIZER_HOOK_END]*/
-	//"P4OQ,Video Dijitter,Enabled,Disabled;",
 
   nes_top nes (
       .clk_74a(clk_74a),
@@ -1164,6 +1163,8 @@ endgenerate
       .dram_we_n(dram_we_n),
 
       // Video
+      .ce_pix(ce_pix),
+      .ce_pix90(ce_pix90),
       .HBlank (h_blank),
       .VBlank (v_blank),
       .HSync  (video_hs_nes),
@@ -1176,7 +1177,8 @@ endgenerate
   );
 
   // Video
-
+  wire ce_pix;
+  wire ce_pix90;
   wire h_blank;
   wire v_blank;
   wire video_hs_nes;
@@ -1203,43 +1205,41 @@ endgenerate
   wire de = ~(h_blank || v_blank);
   wire [23:0] video_slot_rgb = {9'b0, hide_overscan_with_region, square_pixels_s, 10'b0, 3'b0};
 
-  always @(posedge clk_video_5_37) begin
+  always @(posedge clk_ppu_21_47) begin
     video_hs_reg  <= 0;
     video_de_reg  <= 0;
     video_rgb_reg <= 24'h0;
 
-    if (de) begin
-      video_de_reg  <= 1;
-      //video_rgb_reg <= video_rgb_nes;
-      video_rgb_reg <= video_rgb_pocket;
-    end else if (de_prev && ~de) begin
-      video_rgb_reg <= video_slot_rgb;
-    end
+      if (de) begin
+        video_de_reg  <= 1;
+        //video_rgb_reg <= video_rgb_nes;
+        video_rgb_reg <= video_rgb_pocket;
+      end else if (de_prev && ~de) begin
+        video_rgb_reg <= video_slot_rgb;
+      end
 
-    if (hs_delay > 0) begin
-      hs_delay <= hs_delay - 1;
-    end
+      if (hs_delay > 0) begin
+        hs_delay <= hs_delay - 1;
+      end
 
-    if (hs_delay == 1) begin
-      video_hs_reg <= 1;
-    end
+      if (hs_delay == 1) begin
+        video_hs_reg <= 1;
+      end
 
-    if (~hs_prev && video_hs_nes) begin
-      // HSync went high. Delay by 3 cycles to prevent overlapping with VSync
-      hs_delay <= 7;
-    end
+      if (~hs_prev && video_hs_nes) begin
+        // HSync went high. Delay by 3 cycles to prevent overlapping with VSync
+        hs_delay <= 7;
+      end
 
-    // Set VSync to be high for a single cycle on the rising edge of the VSync coming out of the core
-    video_vs_reg <= ~vs_prev && video_vs_nes;
-    hs_prev <= video_hs_nes;
-    vs_prev <= video_vs_nes;
-    de_prev <= de;
+      // Set VSync to be high for a single cycle on the rising edge of the VSync coming out of the core
+      video_vs_reg <= ~vs_prev && video_vs_nes;
+      hs_prev <= video_hs_nes;
+      vs_prev <= video_vs_nes;
+      de_prev <= de;
   end
 
   // Sound
-
   wire [15:0] audio;
-
   reg  [15:0] audio_buffer = 0;
 
   // Buffer audio to have better fitting on audio route
@@ -1271,10 +1271,10 @@ endgenerate
   ///////////////////////////////////////////////
 
   wire clk_85_9;
-  wire clk_ppu_21_47;
-  wire clk_video_5_37;
-  wire clk_video_5_37_90deg;
-  wire clk_analogizer; //42_954_496
+  wire clk_ppu_21_47; //26.60 for PAL
+  reg clk_video_5_37; //5.32 fof PAL
+  reg clk_video_5_37_90deg;
+  wire clk_analogizer; //42_954_496 //
 
 // wire [63:0] reconfig_to_pll;
 // wire [63:0] reconfig_from_pll;
@@ -1294,10 +1294,6 @@ generate
           .outclk_2(clk_video_5_37),
           .outclk_3(clk_video_5_37_90deg),
           .outclk_4(clk_analogizer), //42.954496MHz
-
-          // .reconfig_to_pll  (reconfig_to_pll),//
-          // .reconfig_from_pll(reconfig_from_pll),//
-
           .locked(pll_core_locked)
       );
     end else begin
@@ -1311,10 +1307,6 @@ generate
           .outclk_2(clk_video_5_37),
           .outclk_3(clk_video_5_37_90deg),
           .outclk_4(clk_analogizer), //42.562736
-
-          // .reconfig_to_pll  (reconfig_to_pll),//
-          // .reconfig_from_pll(reconfig_from_pll),//
-
           .locked(pll_core_locked)
         );
     end

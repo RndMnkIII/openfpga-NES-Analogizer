@@ -28,42 +28,6 @@
         "enabled": false
       },
       {
-        "name": "System Type",
-        "id": 43,
-        "type": "list",
-        "enabled": true,
-        "persist": true,
-        "writeonly": true,
-        "address": "0x54",
-        "defaultval": 1,
-        "options": [
-          {
-            "value": 0,
-            "name": "Auto>NTSC"
-          },
-          {
-            "value": 1,
-            "name": "Auto>PAL"
-          },
-          {
-            "value": 2,
-            "name": "Auto>Dendy"
-          },
-          {
-            "value": 3,
-            "name": "Force NTSC"
-          },
-          {
-            "value": 4,
-            "name": "Force PAL"
-          },
-          {
-            "value": 5,
-            "name": "Force Dendy"
-          }
-        ]
-      },
-      {
         "name": "Video Dejitter",
         "id": 44,
         "type": "list",

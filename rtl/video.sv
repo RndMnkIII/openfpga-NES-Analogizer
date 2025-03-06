@@ -22,6 +22,7 @@ module video
 	output   reg hold_reset,
 
 	output       ce_pix,
+	output       ce_pix90,
 	output reg   HSync,
 	output reg   VSync,
 	output reg   HBlank,
@@ -31,15 +32,18 @@ module video
 	output [7:0] B
 );
 
-reg pix_ce, pix_ce_n;
+reg pix_ce, pix_ce_n, pix_ce_90;
 wire [5:0] color_ef = reticle[0] ? (reticle[1] ? 6'h21 : 6'h15) : is_padding ? 6'd63 : color;
 
 always @(negedge clk) begin
-	pix_ce   <= ~cnt[1] & ~cnt[0];
-	pix_ce_n <=  cnt[1] & ~cnt[0];
+	pix_ce    <= ~cnt[1] & ~cnt[0];
+	pix_ce_n  <=  cnt[1] & ~cnt[0];
+	pix_ce_90 <= ~cnt[1] &  cnt[0];
 end
 
 assign ce_pix = pix_ce;
+assign ce_pix90 = pix_ce_90;
+
 // Kitrinx 34 palette by Kitrinx
 wire [23:0] pal_kitrinx_lut[64] = '{
 	'h666666, 'h01247B, 'h1B1489, 'h39087C, 'h520257, 'h5C0725, 'h571300, 'h472300,

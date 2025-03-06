@@ -1,5 +1,6 @@
 //Chip32 loader code for Analogizer NES Core
-//RndMnkIII. 25/02/2025.
+//RndMnkIII. 25/02/2025 : initial code - load bitstream based on NES ROM header
+//           06/03/2025 : load NTSC/PAL bitstream based on iNES 2.0 ROM header. If not load NTSC by default.
 //This code is based on the work of @agg23 openFPGA SNES core: https://github.com/agg23/openfpga-SNES
 // Pseudocode:
 // Check that is a iNES2.0 HEADER
@@ -253,12 +254,21 @@ check_system:
 	and r8,#3 //use two lower bits	
 	ld r4,r8 //copy region value to r4
 	and r8,#1 //take one bit 0 on r3   00 NTSC 01 PAL 10 Multi-System 11 Dendy(PAL)
-	asl r8,#1 //multiply by 2
-	or r12,r8 //add r3 to r12 now the bitstream to load is encoded into r12
+
+	//check if system is PAL or Dendy, then the bitstrem will be the #2
+	bit r8,#1
+	jp z, load_core
+	ld r12,#2 //bitstream #2 PAL
+	log_string("*** Loading PAL bitstream ***")
+	jp load_core
+
+//is_no_pal:
+//	asl r8,#1 //multiply by 2
+//	or r12,r8 //add r3 to r12 now the NTSC bitstream to load is encoded into r12
 
 load_core:
 	//load the core based on mapper code selection and region setting
-	core r12 //core #0 NTSC Block 1, core #1 NTSC Block 2 (audio mappers), core #2 PAL/Dendy Block 1, core #3 PAL/Dendy Block 2 (audio mappers) 
+	core r12 //core #0 NTSC Block 1, core #1 NTSC Block 2 (audio mappers), core #2 PAL/Dendy Block 1, no PAL game has audio mappers support
 	
 load_settings:
 	//load assets files
