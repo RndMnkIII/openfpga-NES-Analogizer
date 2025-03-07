@@ -5,9 +5,10 @@
 //
 
 `default_nettype none
+`define USE_OLD_STYLE_SCANDOUBLER  1'b0
 
 module core_top 
-#(parameter reg USE_PAL_PLL = 1'b1) (
+#(parameter reg USE_PAL_PLL = 1'b0) (
 
     //
     // physical connections
@@ -302,14 +303,12 @@ module core_top
   // for bridge read data, we have to mux it
   // add your own devices here
   wire [31:0] analogizer_bridge_rd_data;
-  reg [2:0] bridge_rd_reg;
+
   always @(*) begin
       casex (bridge_addr[31:24])
-        default: begin
-          bridge_rd_data <= 0;
-        end
+        default:                   begin bridge_rd_data <= 0;                         end
         ADDRESS_ANALOGIZER_CONFIG: begin bridge_rd_data <= analogizer_bridge_rd_data; end
-        8'hF8: begin bridge_rd_data <= cmd_bridge_rd_data; end
+        8'hF8:                     begin bridge_rd_data <= cmd_bridge_rd_data;        end
       endcase
 
       if (bridge_addr[31:28] == 4'h2) begin
@@ -317,9 +316,6 @@ module core_top
       end else if (bridge_addr[31:28] == 4'h4) begin
         bridge_rd_data <= save_state_bridge_read_data;
       end
-      // else if (bridge_addr == 32'h054) begin
-      //   bridge_rd_data <= bridge_rd_reg; //0 Auto>NTSC, 1 Auto>PAL, 2 Auto>Dendy, 3 Force NTSC, 4 Force PAL, 5 Force Dendy, when the Chip32 loader reads the user preferences
-      // end
     end
 
   always @(posedge clk_74a) begin
@@ -327,54 +323,45 @@ module core_top
       reset_delay <= reset_delay - 1;
     end
 
-    // if (bridge_rd) begin
-    //   if (bridge_addr == 32'h054) begin
-    //         bridge_rd_reg <= system_type; //0 Auto>NTSC, 1 Auto>PAL, 2 Auto>Dendy, 3 Force NTSC, 4 Force PAL, 5 Force Dendy, when the Chip32 loader reads the user preferences
-    //     end
-    // end
-
     if (bridge_wr) begin
-      casex (bridge_addr[11:0])
-        12'h050: begin
+      casex (bridge_addr)
+        32'h050: begin
           reset_delay <= 32'h100000;
         end
-      //   12'h54: begin
-      //    system_type <= bridge_wr_data[2:0]; //User Menu System Type preferences
-      //  end 
-       12'h330: begin
+       32'h330: begin
          region <= bridge_wr_data[1:0]; //When Chip32 loader writes the region to the Core
        end
-        12'h32C: begin
+        32'h32C: begin
           video_dejitter <= bridge_wr_data[0];
         end
-        12'h200: begin
+        32'h200: begin
           hide_overscan <= bridge_wr_data[0];
         end
-        12'h204: begin
+        32'h204: begin
           mask_vid_edges <= bridge_wr_data[1:0];
         end
-        12'h208: begin
+        32'h208: begin
           allow_extra_sprites <= bridge_wr_data[0];
         end
-        12'h20C: begin
+        32'h20C: begin
           selected_palette <= bridge_wr_data[2:0];
         end
-        12'h210: begin
+        32'h210: begin
           square_pixels <= bridge_wr_data[0];
         end
-        12'h300: begin
+        32'h300: begin
           multitap_enabled <= bridge_wr_data[0];
         end
-        12'h304: begin
+        32'h304: begin
           lightgun_enabled <= bridge_wr_data[1:0]; //Modified to add support for Analogizer SNAC Zapper lightgun
         end
-        12'h308: begin
+        32'h308: begin
           lightgun_dpad_aim_speed <= bridge_wr_data[7:0];
         end
-        12'h30C: begin
+        32'h30C: begin
           swap_controllers <= bridge_wr_data[0];
         end
-        12'h310: begin
+        32'h310: begin
           turbo_speed <= bridge_wr_data[2:0];
         end
       endcase
@@ -904,7 +891,7 @@ generate
     if (USE_PAL_PLL  == 1'b0) begin
       openFPGA_Pocket_Analogizer #(.MASTER_CLK_FREQ(42_954_496), .LINE_LENGTH(260), 
                                   .ADDRESS_ANALOGIZER_CONFIG(ADDRESS_ANALOGIZER_CONFIG),
-                                  .USE_OLD_STYLE_SVGA_SCANDOUBLER(1'b1)) 
+                                  .USE_OLD_STYLE_SVGA_SCANDOUBLER(`USE_OLD_STYLE_SCANDOUBLER)) 
                                 analogizer (
         .clk_74a(clk_74a),
         .i_clk(clk_analogizer),
@@ -973,7 +960,7 @@ generate
   else begin
           openFPGA_Pocket_Analogizer #(.MASTER_CLK_FREQ(42_562_736), .LINE_LENGTH(260), 
                                   .ADDRESS_ANALOGIZER_CONFIG(ADDRESS_ANALOGIZER_CONFIG),
-                                  .USE_OLD_STYLE_SVGA_SCANDOUBLER(1'b1)) 
+                                  .USE_OLD_STYLE_SVGA_SCANDOUBLER(`USE_OLD_STYLE_SCANDOUBLER)) 
                                 analogizer (
         .clk_74a(clk_74a),
         .i_clk(clk_analogizer),
@@ -1104,7 +1091,7 @@ endgenerate
       .p4_dpad_right(p4_controls[3]),
 
       // Settings
-      .hide_overscan(hide_overscan_with_region), //Don't Hide overscan wire hide_overscan = status[4] && ~pal_video;
+      .hide_overscan(hide_overscan_s), //Don't Hide overscan wire hide_overscan = status[4] && ~pal_video;
       .mask_vid_edges(mask_vid_edges_s),
       .allow_extra_sprites(allow_extra_sprites_s),
       .selected_palette(selected_palette_s),
@@ -1165,8 +1152,8 @@ endgenerate
       .dram_we_n(dram_we_n),
 
       // Video
-      .ce_pix(ce_pix),
-      .ce_pix90(ce_pix90),
+      .ce_pix(),
+      .ce_pix90(),
       .HBlank (h_blank),
       .VBlank (v_blank),
       .HSync  (video_hs_nes),
@@ -1179,8 +1166,8 @@ endgenerate
   );
 
   // Video
-  wire ce_pix;
-  wire ce_pix90;
+  // wire ce_pix;
+  // wire ce_pix90;
   wire h_blank;
   wire v_blank;
   wire video_hs_nes;
@@ -1207,7 +1194,7 @@ endgenerate
   wire de = ~(h_blank || v_blank);
   wire [23:0] video_slot_rgb = {9'b0, hide_overscan_with_region, square_pixels_s, 10'b0, 3'b0};
 
-  always @(posedge clk_ppu_21_47) begin
+  always @(posedge clk_video_5_37) begin
     video_hs_reg  <= 0;
     video_de_reg  <= 0;
     video_rgb_reg <= 24'h0;
@@ -1274,8 +1261,8 @@ endgenerate
 
   wire clk_85_9;
   wire clk_ppu_21_47; //26.60 for PAL
-  reg clk_video_5_37; //5.32 fof PAL
-  reg clk_video_5_37_90deg;
+  wire clk_video_5_37; //5.32 fof PAL
+  wire clk_video_5_37_90deg;
   wire clk_analogizer; //42_954_496 //
 
 // wire [63:0] reconfig_to_pll;
