@@ -56,7 +56,7 @@ module nes_top (
     input wire p4_dpad_down,
     input wire p4_dpad_left,
     input wire p4_dpad_right,
-
+    
     //Analogizer SNAC Zapper (always on P2 port)
     input wire SNAC_Zapper_Trigger,
     input wire SNAC_Zapper_Light,
@@ -67,7 +67,6 @@ module nes_top (
     input wire allow_extra_sprites,
     input wire [2:0] selected_palette,
     input 		  dejitter_timing,
-
     input wire multitap_enabled,
     input wire [1:0] lightgun_enabled, //added bit one to check for Analogizer SNAC Zapper
     input wire [7:0] lightgun_dpad_aim_speed,
@@ -120,8 +119,6 @@ module nes_top (
     output wire        dram_we_n,
 
     // Video
-    output ce_pix,
-    output ce_pix90,
     output HSync,
     output VSync,
     output HBlank,
@@ -220,8 +217,7 @@ module nes_top (
       .int_audio     (int_audio),
       .ext_audio     (ext_audio),
       // Video
-      //.ex_sprites    (allow_extra_sprites),
-      .ex_sprites    (1'b0),
+      .ex_sprites    (allow_extra_sprites),
       .color         (color),
       .emphasis      (emphasis),
       .cycle         (cycle),
@@ -864,8 +860,7 @@ module nes_top (
       .reticle(lightgun_enabled[0] ? reticle : 2'b00),
       .pal_video(pal_video),
 
-      .ce_pix(ce_pix),
-      .ce_pix90(ce_pix90),
+      // .ce_pix(ce_pix),
       .HSync(HSync),
       .VSync(VSync),
       .HBlank(HBlank),

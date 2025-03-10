@@ -13,6 +13,7 @@ Please make sure your PAL ROM has an iNES 2.0 header before reporting that the P
 * Analogizer V1.0.5 [06/03/2025]: Fixed broken PAL bitstream support.
 * Analogizer v1.0.6 [06/03/2025]: Added PAL bitstream for Set2 mappers (needed for Castlevania III PAL for example).
 * Analogizer v1.0.7 [07/03/2025]: Fixed Savestates again (was an error reintroduced with 1.0.5).
+* Analogizer v1.0.8 [10/03/2025]: Restored Extended Sprites support. I had inadvertently disabled extended sprite support at the core level (hack). I have enabled it but this has made me do a lot of flourishes to make room for this functionality along with everything else.
 
 For the PAL/NTSC/Dendy ROM detection the Chip32 loader reads the NES game ROM header previously to load the core to decode the system type, this needs a iNES2.0 ROM header. If the ROM that are you using is of an older header type or a MultiSystem ROM is detected the core will boot into NTSC mode. 
 
@@ -179,7 +180,7 @@ For testing, or to temporarily load a new palette, you can choose the `Load Cust
 ### Video Options
 
 There are several options provided for tweaking the displayed video:
-
+* `Video Dejitter` - Intended for use with Analogizer video output with a CRT screen to mimick the real behaviour of the NES. Disable it for use with the Pocket screen, the Dock output or Video Scalers as the OSSC.
 * `Hide Overscan` - Hides the top and bottom 8 pixels of the video, which would normally be masked by the CRT. Adjusts the aspect ratio to correspond with this modification. This option does nothing in PAL mode
 * `Edge Masking` - Masks the sides of the screen in black, depending on the chosen option. The auto setting automatically masks the left side when certain conditions are met.
 * `Square Pixels` - The internal resolution of the NES is a 8:7 pixel aspect ratio (wide pixels), which roughly corresponds to what users would see on 4:3 display aspect ratio CRTs. Some games are designed to be displayed at 8:7 PAR (the core's default), and others at 1:1 PAR (square pixels). The `Square Pixels` option is provided to switch to a 1:1 pixel aspect ratio.
@@ -190,3 +191,18 @@ There are several options provided for tweaking the displayed video:
 Core supports virtual lightguns by enabling the `Use Zapper > Emulated Zapper (Stick)` setting. The crosshair can be controlled with the D-Pad or left joystick, using the A button to fire. D-Pad aim sensitivity can be adjusted with the "D-Pad Aim Speed" setting. In addition, the Analogizer core version supports directly connecting the Zapper gun using a SNAC NES adapter  by enabling the `Use Zapper > SNAC Zapper` setting
 
 **NOTE:** Joystick support for aiming only appears to work when a controller is paired over Bluetooth and not connected to the Analogue Dock directly by USB.
+
+## For developers (Build & Install instructions (Windows)):
+
+1) Install Quartus 21.1 (x64)
+2) Add to the system or user Path: `<Quartus 21.1 Install Path>\quartus\bin64`
+   clone the project files: `git clone <repository-URL>`
+3) Open a PowerShell terminal to project folder openfpga-NES-Analogizer
+4) Generate the four bitstreams files running the scripts: 
+   `.\build.ps1 NTSC_SET1`
+   `.\build.ps1 NTSC_SET2`
+   `.\build.ps1 PAL_SET1`
+   `.\build.ps1 PAL_SET2`
+   The generated *.rev bitstream files are stored in the 'core_bitstreams' folder
+5) Copy the contents from 'pkg\pocket' folder to the root of Pocket SD Card.
+6) Copy the bitstream files from 'core_bitstreams' to the Core folder 'Cores\RndMnkIII.NES' in the Pocket SD Card.
