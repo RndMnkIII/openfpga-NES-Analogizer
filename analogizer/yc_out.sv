@@ -271,4 +271,5 @@ always_ff @(posedge clk) begin
 end
 
 assign dout = {C, Y};
+
 endmodule
