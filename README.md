@@ -161,7 +161,7 @@ By configuring the `Turbo Speed` controller option in `Core Settings`, you can u
 
 ### Expansion Audio
 
-Expansion audio should be supported for every mapper except those that use VRC7. If you encounter a game that is not playing the expanded audio outside of VRC7, please report it.
+Expansion audio should be supported for every mapper including VRC7. If you encounter a game that is not playing the expanded audio, please report it.
 
 ### Palette Options
 
