@@ -14,6 +14,10 @@ Please make sure your PAL ROM has an iNES 2.0 header before reporting that the P
 * Analogizer v1.0.6 [06/03/2025]: Added PAL bitstream for Set2 mappers (needed for Castlevania III PAL for example).
 * Analogizer v1.0.7 [07/03/2025]: Fixed Savestates again (was an error reintroduced with 1.0.5).
 * Analogizer v1.0.8 [11/03/2025]: Restored Extended Sprites support. I had inadvertently disabled extended sprite support at the core level (hack). I have enabled it but this has made me do a lot of flourishes to make room for this functionality along with everything else.
+* Analogizer v1.0.9 [11/03/2025]: Added global switch to disable/enable Analogizer from Pocket Core Menu. When
+  is disabled the SNAC controllers settings are ignored and the Pocket default controls are used. This applies
+  to the Blank Pocket Screen setting also, the video is forwarded toward the Pocket screen instead the Analogizer
+  settings that was stored.
 
 For the PAL/NTSC/Dendy ROM detection the Chip32 loader reads the NES game ROM header previously to load the core to decode the system type, this needs a iNES2.0 ROM header. If the ROM that are you using is of an older header type or a MultiSystem ROM is detected the core will boot into NTSC mode. 
 
@@ -177,8 +181,11 @@ You can load external palettes as well. This palette is stored at `Assets/nes/ag
 
 For testing, or to temporarily load a new palette, you can choose the `Load Custom Palette` option (make sure to choose `Core Settings/Palette/Custom`). This palette selection is temporary, and will be reset when quitting and reopening the core.
 
-### Video Options
+### Analogizer Options
 
+* `Enable Analogizer`- Enables/Disables the Analogizer adapter globall. When it is disabled, bypass the specific settings for Analogizer, this settings makes the SNAC adapter settings be ignored, using Pocket's default inputs, also forces the video output to be forwarded towards Pocket screen.
+
+### Video Options
 There are several options provided for tweaking the displayed video:
 * `Video Dejitter` - Intended for use with Analogizer video output with a CRT screen to mimick the real behaviour of the NES. Disable it for use with the Pocket screen, the Dock output or Video Scalers as the OSSC.
 * `Hide Overscan` - Hides the top and bottom 8 pixels of the video, which would normally be masked by the CRT. Adjusts the aspect ratio to correspond with this modification. This option does nothing in PAL mode
