@@ -13,7 +13,7 @@ Please make sure your PAL ROM has an iNES 2.0 header before reporting that the P
 * Analogizer V1.0.5 [06/03/2025]: Fixed broken PAL bitstream support.
 * Analogizer v1.0.6 [06/03/2025]: Added PAL bitstream for Set2 mappers (needed for Castlevania III PAL for example).
 * Analogizer v1.0.7 [07/03/2025]: Fixed Savestates again (was an error reintroduced with 1.0.5).
-* Analogizer v1.0.8 [10/03/2025]: Restored Extended Sprites support. I had inadvertently disabled extended sprite support at the core level (hack). I have enabled it but this has made me do a lot of flourishes to make room for this functionality along with everything else.
+* Analogizer v1.0.8 [11/03/2025]: Restored Extended Sprites support. I had inadvertently disabled extended sprite support at the core level (hack). I have enabled it but this has made me do a lot of flourishes to make room for this functionality along with everything else.
 
 For the PAL/NTSC/Dendy ROM detection the Chip32 loader reads the NES game ROM header previously to load the core to decode the system type, this needs a iNES2.0 ROM header. If the ROM that are you using is of an older header type or a MultiSystem ROM is detected the core will boot into NTSC mode. 
 
