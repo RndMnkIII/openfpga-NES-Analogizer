@@ -18,12 +18,20 @@ Please make sure your PAL ROM has an iNES 2.0 header before reporting that the P
   is disabled the SNAC controllers settings are ignored and the Pocket default controls are used. This applies
   to the Blank Pocket Screen setting also, the video is forwarded toward the Pocket screen instead the Analogizer
   settings that was stored.
+* Analogizer v1.1.0 [22/03/2025]: Added support to AnalogizerConfigurator/Pupdate regional settings.
+  
+For the PAL/NTSC/Dendy ROM detection the Chip32 loader reads the NES game ROM header previously to load the core to decode the system type, this needs a iNES2.0 ROM header. If the ROM that are you using is of an older header type or not `analogizer.bin` file is detected the core will boot into NTSC mode. 
 
-For the PAL/NTSC/Dendy ROM detection the Chip32 loader reads the NES game ROM header previously to load the core to decode the system type, this needs a iNES2.0 ROM header. If the ROM that are you using is of an older header type or a MultiSystem ROM is detected the core will boot into NTSC mode. 
+The Loader uses the regional settings from `analogizer.bin`file to determine the mode the ROM is loaded/NES hardware runs. 
+The settings are:
+ 1) Auto>NTSC:     Try to autodetect the regional setting from the ROM header. If the ROM is `Multi-System` uses the NTSC mode.
+ 2) Auto>PAL:      Try to autodetect the regional setting from the ROM header. If the ROM is `Multi-System` uses the PAL mode.
+ 3) Auto>Another:  Try to autodetect the regional setting from the ROM header. If the ROM is `Multi-System` uses the Dendy mode.
+ 4) Force NTSC:    The ROM uses the NTSC mode. 
+ 5) Force PAL:     The ROM uses the PAL mode. 
+ 6) Force Another: The ROM uses the Dendy mode. 
 
-At the moment I cannot add an option to the core menu to force a ROM to load using a system type (NTSC, PAL or Dendy) due to the way the core loader works. I hope to provide a solution to this later.
-
-This Analogizer core uses a configuration file to select Analogizer adapter options, not based on the Pocket's menu system. It is necessary to run an external utility Pupdate or AnalogizerConfigurator to generate such a file. Once generated, you must copy the analogizer.bin file to the /Assets/analogizer/common folder on the Pocket SD card. If this folder does not exist, you must create it. Check the refered utility for the relevant options for the Analogizer adapter: SNAC controller, SNAC controller assigments (how to map physical SNAC game controllers to the Pocket openFPGA framework PAD format), Video output and Blank the Pocket Screen (On/Off).
+This Analogizer core uses a configuration file to select Analogizer adapter options, not based on the Pocket's menu system. It is necessary to run an external utility [Pupdate >= 4.4.0](https://github.com/mattpannella/pupdate/releases)  or [AnalogizerConfigurator >= 0.4](https://github.com/RndMnkIII/AnalogizerConfigurator/releases) to generate such a file. Once generated, you must copy the analogizer.bin file to the /Assets/analogizer/common folder on the Pocket SD card. If this folder does not exist, you must create it. Check the refered utility for the relevant options for the Analogizer adapter: SNAC controller, SNAC controller assigments (how to map physical SNAC game controllers to the Pocket openFPGA framework PAD format), Video output and Blank the Pocket Screen (On/Off).
 
 This utility allows you to do a few things beyond the usual SNAC controller type and assignment, or video output type and blank of the Pocket screen.
 

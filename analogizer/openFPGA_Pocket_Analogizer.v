@@ -169,6 +169,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 	analogizer_ena	  <= analogizer_config_s[5];	
 	pocket_blank_screen   <= analogizer_config_s[14];
     analogizer_osd_out2	  <= analogizer_config_s[15];
+	//regional_settings <= analogizer_config_s[19:16]; //need to be extended to 20 bits.
   end
 
   wire conf_AB = (snac_game_cont_type >= 5'd16);
